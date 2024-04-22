@@ -19,8 +19,6 @@ return new class extends Migration
             $table->string('phonenumber');
             $table->timestamps();
             $table->string('status');
-            // id from locations table
-            $table->foreignId('location_id')->constrained();
             // id from users table
             $table->foreignId('user_id')->constrained()->onDelte('cascade');
             // id from categorys table

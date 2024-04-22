@@ -5,14 +5,23 @@
         </div>
         @if ($products->isEmpty())
             <div class="list-group">
-                <p  class="list-group-item list-group-item-action text-center">No products available in this category.</p>
+                <p class="list-group-item list-group-item-action text-center">No products available in this category.</p>
             </div>
-         @else
+        @else
             <div class="list-group">
                 @foreach ($products as $product)
-                    <a href="/product/{{$product->id}}"  class="list-group-item list-group-item-action ">{{ $product->title }}</a>
+                    <a href="/product/{{$product->id}}" class="list-group-item list-group-item-action">
+                        <div class="d-flex align-items-center">
+                            @if($product->images->first()?->image_path)
+                                <img src="{{ asset('storage/' . $product->images->first()->image_path) }}" alt="{{ $product->title }}" style="width: 100px; height: 100px;" class="mr-3">
+                            @else
+                                <div class="mr-3" style="width: 100px; height: 100px; background-color: #eee;"></div>
+                            @endif
+                            <span>{{ $product->title }}</span>
+                        </div>
+                    </a>
                 @endforeach
             </div>
-         @endif
+        @endif
     </div>
 </x-layout>

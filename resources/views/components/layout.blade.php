@@ -50,6 +50,11 @@
                 </div>
             </form>
         @endauth
+        @if(auth()->user())
+            <div class="d-flex justify-content-center flex-row my-3 py-3 my-md-0">
+                <a href="/cart" class="btn btn-primary">Cart</a>
+            </div>
+        @endif
     </div>
 </header>
 <!-- header ends here -->

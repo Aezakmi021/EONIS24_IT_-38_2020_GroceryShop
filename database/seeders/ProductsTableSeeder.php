@@ -20,7 +20,6 @@ class ProductsTableSeeder extends Seeder
                 'price' => $faker->randomNumber(2),
                 'phonenumber' => $faker->phoneNumber,
                 'status' => $faker->word,
-                'location_id' => $faker->numberBetween(1, 15), // Assuming you have 15 locations
                 'user_id' => $faker->numberBetween(1, 10), // Assuming you have 10 users
                 'category_id' => $faker->numberBetween(1, 5), // Assuming you have 15 categories
                 'created_at' => now(),

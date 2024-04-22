@@ -5,11 +5,11 @@
     <ul class="list-unstyled px-5">
         @foreach ($sidebarCategories as $sidebarCategory)
             <li>
-             
+
                 <form class="category-form" action="{{ route('category.show', $sidebarCategory->id) }}" method="GET">
                     @csrf
                     <button type="submit" class="btn btn-link">{{ $sidebarCategory->categoryName }}</button>
-                </form>                
+                </form>
                 @if ($sidebarCategory->subcategories->count() > 0)
                     <ul class="list-unstyled">
                         @include('subcategories', ['subcategories' => $sidebarCategory->subcategories])

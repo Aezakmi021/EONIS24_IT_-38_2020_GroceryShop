@@ -2,28 +2,24 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Product;
 use App\Models\Category;
 use Illuminate\Http\Request;
 
 class CategoryController extends Controller
 {
-    //
     public function delete(Category $category)
     {
-        if(!(isset(auth()->user()->isAdmin)))
-        {  
-            return back()->with('failure','You dont have this permission');
+        if (!(isset(auth()->user()->isAdmin))) {
+            return back()->with('failure', 'You dont have this permission');
         }
         $category->delete();
-        return redirect('/categories')->with('success','Location is deleted');
+        return redirect('/categories')->with('success', 'Category is deleted');
     }
 
     public function store(Request $request)
-    {       
-        if(!(isset(auth()->user()->isAdmin)))
-        {  
-            return back()->with('failure','You dont have this permission');
+    {
+        if (!(isset(auth()->user()->isAdmin))) {
+            return back()->with('failure', 'You dont have this permission');
         }
 
         $incomingFields = $request->validate([
@@ -33,23 +29,20 @@ class CategoryController extends Controller
         $parentId = $request->get('parentId');
         $incomingFields['categoryName'] = strip_tags($incomingFields['categoryName']);
         $incomingFields['parent_id'] = $parentId;
+
         Category::create($incomingFields);
 
-        return back()->with('success','You created product !');
-
-
+        return back()->with('success', 'You created category!');
     }
 
     public function viewPage()
     {
-        if(!(isset(auth()->user()->isAdmin)))
-        {  
-            return back()->with('failure','You dont have this permission');
+        if (!(isset(auth()->user()->isAdmin))) {
+            return back()->with('failure', 'You dont have this permission');
         }
-        $categories= Category::all();
+        $categories = Category::all();
         return view('categories', ['categories' => $categories]);
     }
-   
 
     public function showProducts($categoryId)
     {
@@ -61,7 +54,5 @@ class CategoryController extends Controller
 
         $products = $mainCategory->allProducts();
         return view('category-products', compact('mainCategory', 'products'));
-    } 
-    
+    }
 }
-

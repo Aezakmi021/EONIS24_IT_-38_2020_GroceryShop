@@ -9,26 +9,24 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    public function up(): void
-    {
-        Schema::create('carts', function (Blueprint $table) {
-            $table->id();
-            $table->unsignedBigInteger('user_id');
-            $table->unsignedBigInteger('product_id');
-            $table->timestamps();
+     public function up()
+     {
+         Schema::create('carts', function (Blueprint $table) {
+             $table->id();
+             $table->unsignedBigInteger('user_id');
+             $table->timestamps();
 
-            // Define foreign key constraints
-            $table->foreign('user_id')->references('id')->on('users');
-            $table->foreign('product_id')->references('id')->on('products');
-            $table->unique(['user_id', 'product_id']);
-        });
-    }
+             // Define foreign key constraints
+             $table->foreign('user_id')->references('id')->on('users');
+             $table->unique(['user_id']);
+         });
+     }
 
     /**
      * Reverse the migrations.
      */
     public function down(): void
     {
-        Schema::dropIfExists('cart');
+        Schema::dropIfExists('carts');
     }
 };

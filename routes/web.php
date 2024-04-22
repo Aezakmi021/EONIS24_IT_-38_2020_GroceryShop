@@ -28,13 +28,13 @@ Route::delete('/wishlist/remove/{product}', [WishlistController::class, 'remove'
 
 // Stripe
 Route::post('/checkout', [StripeController::class, 'checkout']);
-Route::get('/success', [StripeController::class, 'success']);
+Route::get('/success', [StripeController::class, 'success'])->name('success');
 
 
 //  Cart
 Route::get('/cart', [CartController::class, 'viewPage'])->name('cart');
 Route::post('/cart/add/{product}', [CartController::class, 'addProduct']);
-Route::delete('/cart/delete/{product}', [CartController::class, 'deleteProduct']);
+Route::delete('/cart/delete/{productId}', [CartController::class, 'deleteProduct']);
 
 
 // Categories routes

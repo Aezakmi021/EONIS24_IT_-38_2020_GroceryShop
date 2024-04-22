@@ -14,36 +14,29 @@ class CategoriesTableSeeder extends Seeder
 
         // Create top-level categories
         $categories[] = [
-            'categoryName' => 'Computer',
+            'categoryName' => 'Food And Drinks',
             'parent_id' => null,
             'created_at' => now(),
             'updated_at' => now()
         ];
 
-        $categories[] = [
-            'categoryName' => 'Clothing',
-            'parent_id' => null,
-            'created_at' => now(),
-            'updated_at' => now()
-        ];
-
-        // Insert top-level categories
+        // Insert top-level category
         DB::table('categories')->insert($categories);
 
         // Clear the array for re-use
         $categories = [];
 
-        // Create subcategories
+        // Create subcategories under "Food And Drinks"
         $categories[] = [
-            'categoryName' => 'Components',
-            'parent_id' => 1, // Parent is Computer
+            'categoryName' => 'Food',
+            'parent_id' => 1, // Parent is "Food And Drinks"
             'created_at' => now(),
             'updated_at' => now()
         ];
 
         $categories[] = [
-            'categoryName' => 'Accessories',
-            'parent_id' => 2, // Parent is Clothing
+            'categoryName' => 'Drinks',
+            'parent_id' => 1, // Parent is "Food And Drinks"
             'created_at' => now(),
             'updated_at' => now()
         ];
@@ -51,81 +44,37 @@ class CategoriesTableSeeder extends Seeder
         // Insert subcategories
         DB::table('categories')->insert($categories);
 
-        // Create more categories as needed
+        // Clear the array for re-use
         $categories = [];
 
+        // Create more specific categories under "Food" and "Drinks"
         $categories[] = [
-            'categoryName' => 'Keyboard',
-            'parent_id' => 3, // Parent is Components
+            'categoryName' => 'Juice',
+            'parent_id' => 2, // Parent is "Food"
             'created_at' => now(),
             'updated_at' => now()
         ];
 
         $categories[] = [
-            'categoryName' => 'Mouse',
-            'parent_id' => 3, // Parent is Components
+            'categoryName' => 'Milk',
+            'parent_id' => 2, // Parent is "Food"
             'created_at' => now(),
             'updated_at' => now()
         ];
 
         $categories[] = [
-            'categoryName' => 'Shirts',
-            'parent_id' => 4, // Parent is Accessories
+            'categoryName' => 'Soda',
+            'parent_id' => 3, // Parent is "Drinks"
             'created_at' => now(),
             'updated_at' => now()
         ];
 
         $categories[] = [
-            'categoryName' => 'Pants',
-            'parent_id' => 4, // Parent is Accessories
+            'categoryName' => 'Water',
+            'parent_id' => 3, // Parent is "Drinks"
             'created_at' => now(),
             'updated_at' => now()
         ];
-
-        $categories = [];
-
-        $categories[] = [
-            'categoryName' => 'Electronics',
-            'parent_id' => null,
-            'created_at' => now(),
-            'updated_at' => now(),
-        ];
-
-        $categories[] = [
-            'categoryName' => 'Appliances',
-            'parent_id' => null,
-            'created_at' => now(),
-            'updated_at' => now(),
-        ];
-
-        $categories[] = [
-            'categoryName' => 'Laptops',
-            'parent_id' => 5, // Parent is Electronics
-            'created_at' => now(),
-            'updated_at' => now(),
-        ];
-
-        $categories[] = [
-            'categoryName' => 'Desktops',
-            'parent_id' => 5, // Parent is Electronics
-            'created_at' => now(),
-            'updated_at' => now(),
-        ];
-
-        $categories[] = [
-            'categoryName' => 'Refrigerators',
-            'parent_id' => 6, // Parent is Appliances
-            'created_at' => now(),
-            'updated_at' => now(),
-        ];
-
-        $categories[] = [
-            'categoryName' => 'Washers',
-            'parent_id' => 6, // Parent is Appliances
-            'created_at' => now(),
-            'updated_at' => now(),
-        ];
-
 
         // Insert additional categories
         DB::table('categories')->insert($categories);

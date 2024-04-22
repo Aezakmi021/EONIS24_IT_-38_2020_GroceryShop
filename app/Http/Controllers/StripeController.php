@@ -2,42 +2,65 @@
 
 namespace App\Http\Controllers;
 
-use Stripe\Stripe;
 use Illuminate\Http\Request;
+use Stripe\Stripe;
+use Stripe\Checkout\Session; // Import the Session class from Stripe
+use App\Models\Cart;
 
 class StripeController extends Controller
 {
-    //
     public function checkout(Request $request)
     {
-        // Get the total price from the request
-        $totalPrice = $request->input('total_price');
+        // Get the cart items from the session
+        $cartItems = $request->session()->get('cart', []);
 
-        Stripe::setApiKey(env('STRIPE_SK'));
-        $session = \Stripe\Checkout\Session::create(
-            [
-                'line_items' => 
-                [
-                    [
-                        'price_data' =>
-                        [
-                            'currency' => 'gbp',
-                            'product_data' => ['name' => 'send me money'],
-                            'unit_amount' => $totalPrice * 100, // Convert to cents
-                        ],
-                        'quantity' =>1,
-                    ],
+        // If the cart is empty, redirect back with an error message
+        if (empty($cartItems)) {
+            return redirect()->route('cart')->with('error', 'Your cart is empty.');
+        }
+
+        // Prepare line items array
+        $lineItems = [];
+
+        foreach ($cartItems as $item) {
+            // Provide a default product name if it's missing
+            $productName = isset($item['name']) ? $item['name'] : 'Unnamed Product';
+
+            $lineItems[] = [
+                'price_data' => [
+                    'currency' => 'gbp',
+                    'product_data' => ['name' => $productName],
+                    'unit_amount' => $item['price'] * 100, // Convert to cents
                 ],
-                'mode' => 'payment',
-                'success_url' => route('cart'),
-                'cancel_url'  => route('cart'),
-            ]);
+                'quantity' => $item['quantity'],
+            ];
+        }
+
+        // Create Stripe checkout session
+        Stripe::setApiKey(env('STRIPE_SK'));
+        $session = Session::create([
+            'line_items' => $lineItems,
+            'mode' => 'payment',
+            'success_url' => route('success'),
+            'cancel_url' => route('cart'),
+        ]);
 
         return redirect()->away($session->url);
     }
 
     public function success()
     {
-        return view('/')->with('success', 'Product paid successfully!');
+        // Delete the user's cart
+        $userId = auth()->user()->id;
+        Cart::where('user_id', $userId)->delete();
+
+        // Delete all cart_product items associated with that cart
+        $userCart = Cart::where('user_id', $userId)->first();
+        if ($userCart) {
+            $userCart->products()->detach();
+        }
+
+        // Redirect to success view
+        return view('success')->with('success', 'Product paid successfully!');
     }
 }

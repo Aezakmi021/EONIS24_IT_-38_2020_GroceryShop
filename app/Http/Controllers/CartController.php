@@ -9,43 +9,48 @@ use Illuminate\Support\Facades\Auth;
 
 class CartController extends Controller
 {
-    //
+
     public function viewPage()
     {
-
         $userId = auth()->user()->id;
 
-        $cartItems = Cart::where('user_id', $userId)->with('product')->get();
-        $cart = Cart::where('user_id', $userId)->pluck('product_id');
-        $cartProducts = Product::whereIn('id', $cart)->paginate(5); // 5 products per page
-            //return view('homepage-feed', compact('products'));
-        return  view('cart', ['cartProducts' => $cartProducts,'cart' => $cartItems]);
+        // Retrieve the user's cart with its associated products
+        $cart = Cart::where('user_id', $userId)->with('products')->first();
 
+        // If user's cart exists, get the products
+        $cartItems = $cart ? $cart->products : [];
 
+        return view('cart', ['cartItems' => $cartItems]);
     }
 
-    public function addProduct($productId)
+
+
+    public function addProduct(Request $request, $productId)
     {
         // Step 1: Check if the user is authenticated
         if (Auth::check()) {
             // Step 2: Retrieve the user ID
             $userId = Auth::id();
 
-            // Check if the product is already in the cart
-            $existingCartItem = Cart::where('user_id', $userId)
-                ->where('product_id', $productId)
-                ->first();
+            // Retrieve the user's cart or create a new one if it doesn't exist
+            $userCart = Cart::firstOrCreate(['user_id' => $userId]);
 
-            if ($existingCartItem) {
-                // Product is already in the cart, return a message to the user
-                return redirect()->back()->with('error', 'Product is already in the cart.');
-            }
+            // Attach the product to the user's cart
+            $quantity = $request->input('quantity', 1); // Default quantity is 1
+            $userCart->products()->attach($productId, ['quantity' => $quantity]);
 
-            // Create a new cart record for the authenticated user
-            $cartItem = new Cart();
-            $cartItem->user_id = $userId;
-            $cartItem->product_id = $productId;
-            $cartItem->save();
+            // Fetch product details
+            $product = Product::findOrFail($productId);
+
+            // Update the session to include the newly added item with product details
+            $cart = $request->session()->get('cart', []);
+            $cart[] = [
+                'product_id' => $productId,
+                'name' => $product->title,
+                'price' => $product->price,
+                'quantity' => $quantity
+            ];
+            $request->session()->put('cart', $cart);
 
             return redirect()->back()->with('success', 'Product added to cart.');
         } else {
@@ -54,18 +59,23 @@ class CartController extends Controller
         }
     }
 
-    public function deleteProduct($product)
+
+    public function deleteProduct(Request $request, $productId)
     {
-        $userId = auth()->id();
+        $userId = auth()->user()->id;
 
-        // Find and delete the cart item with the given product ID
-        $cartItem = Cart::where('user_id', $userId)->where('product_id', $product)->first();
+        // Detach the product from the user's cart
+        $userCart = Cart::where('user_id', $userId)->firstOrFail();
+        $userCart->products()->detach($productId);
 
-        if ($cartItem) {
-            $cartItem->delete();
-            return redirect()->back()->with('success', 'Product removed from cart.');
-        } else {
-            return redirect()->back()->with('error', 'Product not found in cart.');
-        }
+        // Remove the item from the session
+        $cart = $request->session()->get('cart', []);
+        $updatedCart = array_filter($cart, function ($item) use ($productId) {
+            return $item['product_id'] != $productId;
+        });
+        $request->session()->put('cart', $updatedCart);
+
+        return redirect()->back()->with('success', 'Product removed from cart.');
     }
+
 }

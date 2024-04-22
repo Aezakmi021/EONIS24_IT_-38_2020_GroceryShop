@@ -14,7 +14,7 @@ class CategoriesTableSeeder extends Seeder
 
         // Create top-level categories
         $categories[] = [
-            'categoryName' => 'Food And Drinks',
+            'categoryName' => 'Drinks',
             'parent_id' => null,
             'created_at' => now(),
             'updated_at' => now()
@@ -26,10 +26,10 @@ class CategoriesTableSeeder extends Seeder
         // Clear the array for re-use
         $categories = [];
 
-        // Create subcategories under "Food And Drinks"
+        // Create subcategories
         $categories[] = [
-            'categoryName' => 'Food',
-            'parent_id' => 1, // Parent is "Food And Drinks"
+            'categoryName' => 'Bread',
+            'parent_id' => null, // Parent is "Food And Drinks"
             'created_at' => now(),
             'updated_at' => now()
         ];
@@ -50,28 +50,28 @@ class CategoriesTableSeeder extends Seeder
         // Create more specific categories under "Food" and "Drinks"
         $categories[] = [
             'categoryName' => 'Juice',
-            'parent_id' => 2, // Parent is "Food"
+            'parent_id' => 1, // Parent is "Food"
             'created_at' => now(),
             'updated_at' => now()
         ];
 
         $categories[] = [
             'categoryName' => 'Milk',
-            'parent_id' => 2, // Parent is "Food"
+            'parent_id' => 1, // Parent is "Food"
             'created_at' => now(),
             'updated_at' => now()
         ];
 
         $categories[] = [
             'categoryName' => 'Soda',
-            'parent_id' => 3, // Parent is "Drinks"
+            'parent_id' => 1, // Parent is "Drinks"
             'created_at' => now(),
             'updated_at' => now()
         ];
 
         $categories[] = [
             'categoryName' => 'Water',
-            'parent_id' => 3, // Parent is "Drinks"
+            'parent_id' => 1, // Parent is "Drinks"
             'created_at' => now(),
             'updated_at' => now()
         ];

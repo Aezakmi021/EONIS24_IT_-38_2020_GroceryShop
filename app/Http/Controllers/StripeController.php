@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Stripe\Stripe;
 use Stripe\Checkout\Session; // Import the Session class from Stripe
 use App\Models\Cart;
+use App\Models\Order;
 
 class StripeController extends Controller
 {
@@ -48,19 +49,32 @@ class StripeController extends Controller
         return redirect()->away($session->url);
     }
 
-    public function success()
+    public function success(Request $request)
     {
+        // Get the cart items from the session
+        $cartItems = $request->session()->get('cart', []);
+
+        // If the cart is empty, redirect back with an error message
+        if (empty($cartItems)) {
+            return redirect()->route('cart')->with('error', 'Your cart is empty.');
+        }
+
         // Delete the user's cart
         $userId = auth()->user()->id;
         Cart::where('user_id', $userId)->delete();
 
-        // Delete all cart_product items associated with that cart
-        $userCart = Cart::where('user_id', $userId)->first();
-        if ($userCart) {
-            $userCart->products()->detach();
-        }
+        // Clear the cart items from the session
+        $request->session()->forget('cart');
+
+        // Create a new order
+        $order = new Order();
+        $order->user_id = $userId;
+        $order->items = json_encode($cartItems); // Store cart items as JSON
+        // Add other order details as needed
+        $order->save();
 
         // Redirect to success view
         return view('success')->with('success', 'Product paid successfully!');
     }
+
 }

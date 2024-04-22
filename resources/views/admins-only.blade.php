@@ -2,21 +2,37 @@
     <div class="container py-md-5 container--narrow">
         <div class="text-center">
             <a href="/categories" class="btn btn-primary text-white">Categories</a>
-        </div>
-        @foreach ($users as $user)
-            @if(!($user->username === auth()->user()->username))
-                <div class="d-flex justify-content-between">
-                    <h2><a href="/profile/{{$user->username}}">{{$user->username}}</a></h2>
-                    <span class="pt-2">
-            <a href="/edit-user/{{$user->id}}/edit" class="text-primary mr-2" data-toggle="tooltip" data-placement="top" title="Edit"><i class="fas fa-edit"></i></a>
-            <form class="delete-post-form d-inline" action="/delete/{{$user->id}}" method="POST">
-              @csrf
-                @method('DELETE')
-              <button class="delete-post-button text-danger" data-toggle="tooltip" data-placement="top" title="Delete"><i class="fas fa-trash"></i></button>
-            </form>
-          </span>
-                </div>
+            @if(auth()->user()->isAdmin === 1)
+                <a href="/orders" class="btn btn-primary text-white">Orders</a>
             @endif
-        @endforeach
+        </div>
+        <div class="table-responsive">
+            <table class="table table-bordered mt-4">
+                <thead>
+                <tr>
+                    <th>Order ID</th>
+                    <th>Status</th>
+                    <th>User</th>
+                    <th>Items</th>
+                </tr>
+                </thead>
+                <tbody>
+                @foreach ($orders as $order)
+                    <tr>
+                        <td>{{ $order->id }}</td>
+                        <td>{{ $order->status }}</td>
+                        <td>{{ $order->user->username }}</td>
+                        <td>
+                            <ul>
+                                @foreach (json_decode($order->items) as $item)
+                                    <li>{{ $item->name }}</li>
+                                @endforeach
+                            </ul>
+                        </td>
+                    </tr>
+                @endforeach
+                </tbody>
+            </table>
+        </div>
     </div>
 </x-layout>

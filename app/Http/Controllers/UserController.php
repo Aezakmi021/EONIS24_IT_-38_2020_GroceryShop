@@ -67,7 +67,7 @@ class UserController extends Controller
         // login after register
         auth()->login($user);
 
-        return redirect('/')->with('success','Thank you for joining PopArt Market');
+        return redirect('/')->with('success','Thank you for joining grocery shop');
     }
 
     public function showCorrectHomepage()
@@ -149,14 +149,25 @@ class UserController extends Controller
     {
         $incomingFields = $request->validate([
             'username' => 'required',
-            'email' => 'required'
+            'email' => 'required|email|unique:users,email,'.$user->id,
+            'password' => 'nullable|min:6|confirmed',
         ]);
 
         $incomingFields['username'] = strip_tags($incomingFields['username']);
         $incomingFields['email'] = strip_tags($incomingFields['email']);
 
-        $user->update($incomingFields);
+        // Update username and email
+        $user->update([
+            'username' => $incomingFields['username'],
+            'email' => $incomingFields['email'],
+        ]);
 
-        return back()->with('success', 'Post sucessfuly updated');
+        // Update password if provided
+        if ($request->filled('password')) {
+            $user->password = bcrypt($incomingFields['password']);
+            $user->save();
+        }
+
+        return back()->with('success', 'User details updated successfully.');
     }
 }

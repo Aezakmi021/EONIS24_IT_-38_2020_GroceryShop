@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\OrderController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\UserController;
@@ -50,6 +51,8 @@ Route::get('/admins-only', [UserController::class, 'adminPage']);
 Route::delete('/delete/{user}', [UserController::class, 'deleteUser']);
 Route::get('/edit-user/{user}/edit', [UserController::class, 'viewUser']);
 Route::put('/edit-user/{user}', [UserController::class, 'update']);
+Route::get('/orders', [OrderController::class, 'index'])->name('orders.index')->middleware('auth');
+Route::put('/orders/{order}/update-status', [OrderController::class, 'updateStatus']);
 
 // User Routes
 Route::get('/', [UserController::class, 'showCorrectHomepage'])->name('login');

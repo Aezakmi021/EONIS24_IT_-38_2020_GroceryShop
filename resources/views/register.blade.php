@@ -36,7 +36,7 @@
         </div>
 
         <div class="row justify-content-center">
-          <button type="submit" class="py-3 mt-4 btn btn-lg btn-success ">Sign up for PopArt market</button>
+          <button type="submit" class="py-3 mt-4 btn btn-lg btn-success ">Sign up for grocery store</button>
         </div>
       </form>
     </div>

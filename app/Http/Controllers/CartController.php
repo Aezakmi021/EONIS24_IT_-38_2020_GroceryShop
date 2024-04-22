@@ -55,7 +55,7 @@ class CartController extends Controller
             return redirect()->back()->with('success', 'Product added to cart.');
         } else {
             // Handle the case where the user is not authenticated
-            return redirect()->route('login')->with('error', 'Please log in to add products to your cart.');
+            return redirect()->route('login')->with('error', 'Please log in to add products to your cart.')->setStatusCode(401);
         }
     }
 
@@ -75,7 +75,7 @@ class CartController extends Controller
         });
         $request->session()->put('cart', $updatedCart);
 
-        return redirect()->back()->with('success', 'Product removed from cart.');
+        return redirect()->back()->with('success', 'Product removed from cart.')->setStatusCode(200);
     }
 
 }

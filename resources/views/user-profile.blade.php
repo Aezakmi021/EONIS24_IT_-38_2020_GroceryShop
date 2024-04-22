@@ -49,5 +49,8 @@
 
             <button type="submit" class="btn btn-primary">Update</button>
         </form>
+
+        <!-- Add a button to view user orders -->
+        <a href="{{ route('my-orders') }}" class="btn btn-success mt-3">View My Orders</a>
     </div>
 </x-layout>

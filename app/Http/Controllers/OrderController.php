@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Order;
+
 class OrderController extends Controller
 {
     public function index()
@@ -12,13 +13,14 @@ class OrderController extends Controller
         $orders = Order::all();
 
         // Pass orders data to the view
-        return view('admin-orders', compact('orders'));
+        return response()->view('admin-orders', compact('orders'), 200);
     }
+
     public function updateStatus(Request $request, Order $order)
     {
         // Validate the incoming request data
         $request->validate([
-            'status' => 'required|string|in:shipped',
+            'status' => 'required|string|in:shipped,processing',
         ]);
 
         // Update the order status
@@ -26,6 +28,6 @@ class OrderController extends Controller
         $order->save();
 
         // Redirect back with a success message
-        return back()->with('success', 'Order status updated successfully.');
+        return redirect()->back()->with('success', 'Order status updated successfully.')->setStatusCode(200);
     }
 }

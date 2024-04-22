@@ -58,6 +58,7 @@ Route::put('/orders/{order}/update-status', [OrderController::class, 'updateStat
 Route::get('/', [UserController::class, 'showCorrectHomepage'])->name('login');
 Route::get('/register', function () { return view('register'); });
 Route::get('/profile/{user:username}', [UserController::class, 'profile']);
+Route::get('/my-orders', [UserController::class, 'viewOrders'])->middleware('auth')->name('my-orders');
 
 Route::post('/register-user', [UserController::class, 'register'])->middleware('guest');
 Route::post('/login', [UserController::class, 'login'])->middleware('guest');

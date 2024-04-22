@@ -44,7 +44,7 @@ class ProductController extends Controller
 
         // Check if validation fails
         if ($validator->fails()) {
-            return redirect()->back()->withErrors($validator)->withInput();
+            return redirect()->back()->withErrors($validator)->withInput()->setStatusCode(422);
         }
 
         // Update the product fields
@@ -71,7 +71,7 @@ class ProductController extends Controller
         $product->save();
 
         // Redirect with success message
-        return back()->with('success', 'Product successfully updated');
+        return back()->with('success', 'Product successfully updated')->setStatusCode(200);
     }
 
 
@@ -85,15 +85,14 @@ class ProductController extends Controller
     public function delete(Product $product)
     {
         $product->delete();
-        return redirect('/profile/' . auth()->user()->username)->with('success','Product is deleted');
+        return redirect('/profile/' . auth()->user()->username)->with('success', 'Product is deleted')->setStatusCode(200);
     }
+
 
     public function viewSingleProduct(Product $product)
     {
-
-        return view('single-product',['product' => $product]);
+        return response()->view('single-product', ['product' => $product], 200);
     }
-
 
 
     public function storeProduct(Request $request)
@@ -111,7 +110,7 @@ class ProductController extends Controller
 
         // Check if validation fails
         if ($validator->fails()) {
-            return redirect()->back()->withErrors($validator)->withInput();
+            return redirect()->back()->withErrors($validator)->withInput()->setStatusCode(422);
         }
 
         // Check if file upload was successful
@@ -141,10 +140,10 @@ class ProductController extends Controller
             $product->images()->create(['image_path' => $imagePath]);
 
             // Redirect with success message
-            return redirect('/')->with('success', 'You created product!');
+            return redirect('/')->with('success', 'You created product!')->setStatusCode(201);
         } else {
             // File upload failed
-            return redirect()->back()->with('failure', 'Failed to upload image.');
+            return redirect()->back()->with('failure', 'Failed to upload image.')->setStatusCode(422);
         }
     }
 
@@ -154,10 +153,10 @@ class ProductController extends Controller
 
     public function showCreateForm()
     {
-
-        $categories= Category::all();
-        return view('create-product', ['categories' => $categories,]);
+        $categories = Category::all();
+        return response()->view('create-product', ['categories' => $categories], 200);
     }
+
     public function storeComment(Request $request, Product $product)
     {
         $request->validate(
@@ -177,7 +176,7 @@ class ProductController extends Controller
 
         $comment->save();
 
-        return back()->with('success', 'Comment added successfully!');
+        return back()->with('success', 'Comment added successfully!')->setStatusCode(200);
     }
 
 

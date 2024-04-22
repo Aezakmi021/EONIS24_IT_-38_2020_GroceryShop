@@ -1,4 +1,8 @@
-<!DOCTYPE html>
+@php
+    use App\Models\Notification;
+@endphp
+
+    <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
@@ -29,6 +33,37 @@
                 </form>
                 @if(auth()->user()->isAdmin === 1)
                     <a class="btn btn-sm btn-secondary mr-2" href="/admins-only">Admin Dashboard</a>
+                @endif
+                @if(auth()->user() && auth()->user()->isAdmin === 1)
+                    <!-- Admin Notification Button -->
+                    <div class="dropdown ml-auto">
+                        <button class="btn btn-sm btn-info dropdown-toggle" type="button" id="adminNotificationDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Notifications
+                        </button>
+                        <div class="dropdown-menu" aria-labelledby="adminNotificationDropdown">
+                            <!-- Check if notifications are available -->
+                            @if(isset($notifications) && $notifications->isNotEmpty())
+                                <!-- Loop through notifications and display each one -->
+                                @foreach($notifications as $notification)
+                                    @php
+                                        // Retrieve the user who placed the order
+                                        $user = \App\Models\User::find($notification->user_id);
+                                    @endphp
+                                        <!-- Check if user exists -->
+                                    @if($user)
+                                        <!-- Display the notification -->
+                                        <a class="dropdown-item" href="#">
+                                            {{ $user->name }} just placed a new order!
+                                        </a>
+                                    @endif
+                                @endforeach
+                            @else
+                                <a class="dropdown-item" href="#">No notifications</a>
+                            @endif
+                        </div>
+                    </div>
+
+
                 @endif
             </div>
         @else

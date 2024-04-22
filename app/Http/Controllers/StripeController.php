@@ -17,7 +17,7 @@ class StripeController extends Controller
 
         // If the cart is empty, redirect back with an error message
         if (empty($cartItems)) {
-            return redirect()->route('cart')->with('error', 'Your cart is empty.');
+            return redirect()->route('cart')->with('error', 'Your cart is empty.')->setStatusCode(400);
         }
 
         // Prepare line items array

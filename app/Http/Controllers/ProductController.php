@@ -119,7 +119,6 @@ class ProductController extends Controller
             $imagePath = $request->file('image')->store('images', 'public');
 
             // Create ImageManager instance
-            // This step is not necessary since we're not using Intervention\Image
 
             // Assign other fields
             $incomingFields = [

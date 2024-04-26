@@ -10,6 +10,7 @@ use App\Models\Notification;
 use Illuminate\Support\Facades\View;
 class UserController extends Controller
 {
+    //boot treba prebaciti skroz u view da se odradjuje
     public function boot()
     {
         View::composer('components.layout', function ($view) {
@@ -19,9 +20,9 @@ class UserController extends Controller
             }
         });
     }
-    public function profile(User $user)
+    public function profile()
     {
-        return view('user-profile', ['username' => $user->username, 'products' => $user->products()->latest()->get(), 'productCount' => $user->products()->count()]);
+        return view('user-profile');
     }
 
     public function logout()
@@ -30,22 +31,31 @@ class UserController extends Controller
         return redirect('/')->with('success', 'You are now logged out');
     }
 
+    //treba kreirati posebnu stranicu za login i ovo refaktorisati
     public function login(Request $request, User $user)
     {
-        $incomingFields = $request->validate([
+        $request->validate([
             'loginusername' => 'required',
             'loginpassword' => 'required'
         ]);
 
-        if (auth()->attempt(['username' => $incomingFields['loginusername'], 'password' => $incomingFields['loginpassword']])) {
+        $loginusername = $request->input('loginusername');
+        $loginpassword = $request->input('loginpassword');
+
+        if (empty($loginusername) || empty($loginpassword)) {
+            return redirect('/')->with('failure', 'Username or password cannot be empty.');
+        }
+
+        if (auth()->attempt(['username' => $loginusername, 'password' => $loginpassword])) {
             $request->session()->regenerate();
             session(['cart' => []]);
-            return view('user-profile', ['username' => $user->username, 'products' => $user->products()->latest()->get(), 'productCount' => $user->products()->count()]);
+            return view('user-profile', ['username' => $user->username])->with('success', 'You are now logged in');
         } else {
             return redirect('/')->with('failure', 'Invalid login.');
         }
     }
 
+    //Kada se uradi posebna stranica za login treba redirektovati na login
     public function register(Request $request)
     {
         $incomingFields = $request->validate([
@@ -63,6 +73,7 @@ class UserController extends Controller
         return redirect('/')->with('success', 'Thank you for joining grocery shop');
     }
 
+    //Treba promeniti ime ove metode i kasnije dodati jos jednu rutu za / kada se doda login str
     public function showCorrectHomepage()
     {
         $products = Product::paginate(5);
@@ -108,22 +119,12 @@ class UserController extends Controller
     public function adminPage(User $user)
     {
         $users = User::all();
-        $authUser = auth()->user(); // Rename to avoid variable conflict
-        if (!isset($authUser->isAdmin)) {
-            return redirect('/')->with('failure', 'Access denied, you are not an administrator')->setStatusCode(403);
-        }
-        if ($authUser->isAdmin === 1) {
-            return view('admins-only', ['users' => $users]); // No need to set status code for views
-        }
-        return redirect('/')->with('failure', 'Access denied, you are not an administrator')->setStatusCode(403);
+
+            return view('admin-dashboard', ['users' => $users]); // No need to set status code for views
     }
 
     public function deleteUser(User $user)
     {
-        $authUser = auth()->user(); // Rename to avoid variable conflict
-        if (!($authUser->isAdmin === 1)) {
-            return redirect('/homepage')->with('failure', 'Warning ! You are not an admin !')->setStatusCode(403);
-        }
         $user->delete();
         return redirect('/admins-only')->with('success', 'User successfully deleted');
     }

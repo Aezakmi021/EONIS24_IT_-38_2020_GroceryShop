@@ -2,12 +2,9 @@
     <div class="container py-md-5 container--narrow">
         <div class="text-center">
             <a href="/categories" class="btn btn-primary text-white">Categories</a>
-            @if(auth()->user()->isAdmin === 1)
                 <a href="/orders" class="btn btn-primary text-white">Orders</a>
-            @endif
         </div>
         @foreach ($users as $user)
-            @if(!($user->username === auth()->user()->username))
                 <div class="d-flex justify-content-between">
                     <h2><a href="/profile/{{$user->username}}">{{$user->username}}</a></h2>
                     <span class="pt-2">
@@ -19,7 +16,6 @@
                         </form>
                     </span>
                 </div>
-            @endif
         @endforeach
     </div>
 </x-layout>

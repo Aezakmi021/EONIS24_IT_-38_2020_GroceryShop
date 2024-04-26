@@ -1,7 +1,7 @@
 <x-layout>
     <div class="container py-md-5 container--narrow">
         <h2>
-            {{$username}}
+            {{ auth()->user()->username }}
         </h2>
 
         <!-- Display user registration date -->

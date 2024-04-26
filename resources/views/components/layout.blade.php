@@ -23,7 +23,7 @@
 
         @auth
             <div class="flex-row my-3 my-md-0">
-                <a href="/profile/{{auth()->user()->username}}" class="mr-2 text-white">{{auth()->user()->username}}</a>
+                <a href="/profile" class="mr-2 text-white">{{auth()->user()->username}}</a>
                 @if(auth()->user()->isAdmin === 1)
                     <a class="btn btn-sm btn-success mr-2" href="/create-product">Create Product</a>
                 @endif
@@ -32,7 +32,7 @@
                     <button class="btn btn-sm btn-secondary">Sign Out</button>
                 </form>
                 @if(auth()->user()->isAdmin === 1)
-                    <a class="btn btn-sm btn-secondary mr-2" href="/admins-only">Admin Dashboard</a>
+                    <a class="btn btn-sm btn-secondary mr-2" href="/admin-dashboard">Admin Dashboard</a>
                 @endif
                 @if(auth()->user() && auth()->user()->isAdmin === 1)
                     <!-- Admin Notification Button -->
@@ -62,8 +62,6 @@
                             @endif
                         </div>
                     </div>
-
-
                 @endif
             </div>
         @else
@@ -72,9 +70,15 @@
                 <div class="row align-items-center">
                     <div class="col-md mr-0 pr-md-0 mb-3 mb-md-0">
                         <input name="loginusername" class="form-control form-control-sm input-dark" type="text" placeholder="Username" autocomplete="off" />
+                        @error('loginusername')
+                        <div class="alert alert-danger">{{ $message }}</div>
+                        @enderror
                     </div>
                     <div class="col-md mr-0 pr-md-0 mb-3 mb-md-0">
                         <input name="loginpassword" class="form-control form-control-sm input-dark" type="password" placeholder="Password" />
+                        @error('loginpassword')
+                        <div class="alert alert-danger">{{ $message }}</div>
+                        @enderror
                     </div>
                     <div class="col-md-auto">
                         <button class="btn btn-primary btn-sm">Sign In</button>

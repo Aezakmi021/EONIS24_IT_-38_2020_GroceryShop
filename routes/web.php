@@ -37,7 +37,7 @@ Route::get('/success', [StripeController::class, 'success'])->name('success');
 Route::get('/cart', [CartController::class, 'viewPage'])->name('cart')->middleware('auth');
 Route::post('/cart/add/{product}', [CartController::class, 'addProduct'])->middleware('auth');
 Route::delete('/cart/delete/{productId}', [CartController::class, 'deleteProduct'])->middleware('auth');
-
+Route::put('/cart/update/{productId}', [CartController::class, 'updateQuantity'])->middleware('auth');
 
 // Admin Routes
     // Admin-Dashboard
@@ -84,6 +84,9 @@ Route::post('/login', [UserController::class, 'login'])->middleware('guest');
 Route::post('/logout', [UserController::class, 'logout'])->middleware('auth');
 
 Route::put('/update-profile', [UserController::class, 'updateProfile'])->middleware('auth');
+
+Route::get('/notifications', 'NotificationController@index')->name('notifications.index');
+Route::get('/notifications/{id}/mark-as-read', 'NotificationController@markAsRead')->name('notifications.markAsRead');
 
 
 

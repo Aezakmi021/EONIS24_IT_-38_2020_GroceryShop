@@ -7,7 +7,7 @@
                     <p>Status: {{ $order->status }}</p>
                     <ul>
                         @foreach (json_decode($order->items) as $item)
-                            <li>{{ $item->name }}</li>
+                            <li>{{ $item->name }} | Quantitiy:{{$item->quantity}}</li>
                         @endforeach
                     </ul>
                 </div>

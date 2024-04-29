@@ -18,7 +18,7 @@ class ProductsTableSeeder extends Seeder
                 'title' => $faker->sentence,
                 'body' => $faker->paragraph,
                 'price' => $faker->randomNumber(2),
-                'phonenumber' => $faker->phoneNumber,
+                'available_quantity' => $faker->randomNumber(2),
                 'status' => $faker->word,
                 'user_id' => 11, // ID 11 is admin user
                 'category_id' => $faker->numberBetween(1, 5), // Assuming you have 15 categories

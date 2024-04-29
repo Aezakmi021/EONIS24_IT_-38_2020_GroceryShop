@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('title');
             $table->longText('body');
             $table->integer('price');
-            $table->string('phonenumber');
+            $table->integer('available_quantity');
             $table->timestamps();
             $table->string('status');
             // id from users table

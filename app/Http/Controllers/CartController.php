@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Auth;
 class CartController extends Controller
 {
 
-    public function viewPage()
+    public function viewPage(Request $request)
     {
         $userId = auth()->user()->id;
 
@@ -20,8 +20,23 @@ class CartController extends Controller
         // If user's cart exists, get the products
         $cartItems = $cart ? $cart->products : [];
 
+        // Update the session to include the cart items if the cart exists
+        if ($cart) {
+            $cartData = [];
+            foreach ($cartItems as $item) {
+                $cartData[] = [
+                    'product_id' => $item->id,
+                    'name' => $item->title,
+                    'price' => $item->price,
+                    'quantity' => $item->pivot->quantity,
+                ];
+            }
+            $request->session()->put('cart', $cartData);
+        }
+
         return view('cart', ['cartItems' => $cartItems]);
     }
+
 
 
 
@@ -32,24 +47,55 @@ class CartController extends Controller
             // Step 2: Retrieve the user ID
             $userId = Auth::id();
 
-            // Retrieve the user's cart or create a new one if it doesn't exist
-            $userCart = Cart::firstOrCreate(['user_id' => $userId]);
-
-            // Attach the product to the user's cart
-            $quantity = $request->input('quantity', 1); // Default quantity is 1
-            $userCart->products()->attach($productId, ['quantity' => $quantity]);
-
             // Fetch product details
             $product = Product::findOrFail($productId);
 
+            // Retrieve the user's cart or create a new one if it doesn't exist
+            $userCart = Cart::firstOrCreate(['user_id' => $userId]);
+
+            // Get the requested quantity
+            $requestedQuantity = $request->input('quantity', 1); // Default quantity is 1
+
+            // Check if the same product is already in the cart
+            $existingCartItem = $userCart->products()->where('product_id', $productId)->first();
+
+            if ($existingCartItem) {
+                // If the product is already in the cart, update the quantity
+                $existingQuantityInCart = $existingCartItem->pivot->quantity;
+                $newQuantity = $existingQuantityInCart + $requestedQuantity;
+                $availableQuantity = $product->available_quantity - $existingQuantityInCart;
+                $validatedQuantity = min($newQuantity, $availableQuantity);
+
+                if ($requestedQuantity > $availableQuantity) {
+                    if ($availableQuantity === 0) {
+                        return redirect()->back()->with('error', 'Cannot add more products, you already reached the limit.')->setStatusCode(422);
+                    } else {
+                        return redirect()->back()->with('error', 'Cannot add more than ' . $availableQuantity . ' products.')->setStatusCode(422);
+                    }
+                }
+
+                // Update the quantity of the existing product in the cart
+                $userCart->products()->updateExistingPivot($productId, ['quantity' => $validatedQuantity]);
+            } else {
+                // Otherwise, attach the product to the user's cart with the specified quantity
+                $userCart->products()->attach($productId, ['quantity' => $requestedQuantity]);
+            }
+
             // Update the session to include the newly added item with product details
             $cart = $request->session()->get('cart', []);
-            $cart[] = [
-                'product_id' => $productId,
-                'name' => $product->title,
-                'price' => $product->price,
-                'quantity' => $quantity
-            ];
+            $existingCartItemIndex = array_search($productId, array_column($cart, 'product_id'));
+            if ($existingCartItemIndex !== false) {
+                // If the product already exists in the session, update its quantity
+                $cart[$existingCartItemIndex]['quantity'] += $requestedQuantity;
+            } else {
+                // Otherwise, add the product to the session
+                $cart[] = [
+                    'product_id' => $productId,
+                    'name' => $product->title,
+                    'price' => $product->price,
+                    'quantity' => $requestedQuantity
+                ];
+            }
             $request->session()->put('cart', $cart);
 
             return redirect()->back()->with('success', 'Product added to cart.');
@@ -58,6 +104,10 @@ class CartController extends Controller
             return redirect()->route('login')->with('error', 'Please log in to add products to your cart.')->setStatusCode(401);
         }
     }
+
+
+
+
 
 
     public function deleteProduct(Request $request, $productId)
@@ -77,5 +127,49 @@ class CartController extends Controller
 
         return redirect()->back()->with('success', 'Product removed from cart.')->setStatusCode(200);
     }
+    public function updateQuantity(Request $request, $productId)
+    {
+        // Retrieve the user's cart
+        $userId = auth()->user()->id;
+        $userCart = Cart::where('user_id', $userId)->firstOrFail();
+
+        // Fetch the product
+        $product = Product::findOrFail($productId);
+
+        // Calculate the available quantity for the product
+        $existingQuantityInCart = $userCart->products()->where('product_id', $productId)->sum('quantity');
+        $availableQuantity = $product->available_quantity;
+
+        // Validate the requested quantity
+        $request->validate([
+            'quantity' => [
+                'required',
+                'numeric',
+                'min:1',
+                'max:' . $availableQuantity, // Limit the quantity to the available quantity
+            ],
+        ]);
+
+        // Get the requested quantity
+        $requestedQuantity = $request->input('quantity');
+
+        // Update the quantity of the specified product in the cart
+        $userCart->products()->updateExistingPivot($productId, ['quantity' => $requestedQuantity]);
+
+        // Update the session to match the updated quantity
+        $cart = $request->session()->get('cart', []);
+        foreach ($cart as &$item) {
+            if ($item['product_id'] == $productId) {
+                $item['quantity'] = $requestedQuantity;
+                break; // Stop the loop once the item is found and updated
+            }
+        }
+        $request->session()->put('cart', $cart);
+
+        // Redirect back to the cart page with a success message
+        return redirect()->back()->with('success', 'Quantity updated successfully.');
+    }
+
+
 
 }

@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\Comment;
 use App\Models\Product;
 use App\Models\Category;
-use App\Models\Location;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
@@ -29,17 +28,19 @@ class ProductController extends Controller
         return view('homepage-feed', compact('products'));
     }
 
-    public function update(Product $product, Request $request)
+
+        // Check if validation fails
+        public function update(Product $product, Request $request)
     {
         // Validate incoming fields
         $validator = Validator::make($request->all(), [
             'title' => 'string|max:255',
             'body' => 'string',
             'price' => 'numeric|min:0',
-            'status' => 'in:Available, Unavailable',
-            'phonenumber' => 'phone_number',
+            'status' => 'in:Available,Unavailable',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'categoryId' => 'exists:categories,id',
+            'available_quantity' => 'integer|min:0',
         ]);
 
         // Check if validation fails
@@ -51,9 +52,9 @@ class ProductController extends Controller
         $product->title = $request->input('title');
         $product->body = $request->input('body');
         $product->price = $request->input('price');
-        $product->status = $request->input('status');
-        $product->phonenumber = $request->input('phonenumber');
+        $product->status = $request->input('status'); // Assign updated status value here
         $product->category_id = $request->input('categoryId');
+        $product->available_quantity = $request->input('available_quantity');
 
         // Check if image is being updated
         if ($request->hasFile('image') && $request->file('image')->isValid()) {
@@ -64,7 +65,6 @@ class ProductController extends Controller
             $product->images()->delete();
             // Create a new image record for the product
             $product->images()->create(['image_path' => $imagePath]);
-
         }
 
         // Save the updated product
@@ -103,9 +103,9 @@ class ProductController extends Controller
             'body' => 'required|string',
             'price' => 'required|numeric|min:0',
             'status' => 'required|in:Available, Unavailable',
-            'phonenumber' => 'required|phone_number',
             'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
             'categoryId' => 'required|exists:categories,id',
+            'available_quantity' => 'integer|min:0',
         ]);
 
         // Check if validation fails
@@ -126,10 +126,10 @@ class ProductController extends Controller
                 'body' => $request->input('body'),
                 'price' => $request->input('price'),
                 'status' => $request->input('status'),
-                'phonenumber' => $request->input('phonenumber'),
                 'user_id' => auth()->id(),
                 'category_id' => $request->input('categoryId'),
                 'image_path' => $imagePath,
+                'available_quantity' => $request->input('available_quantity'),
             ];
 
             // Create the product

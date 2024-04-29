@@ -17,7 +17,7 @@
                     <p>User: {{ $order->user->username }}</p>
                     <ul>
                         @foreach (json_decode($order->items) as $item)
-                            <li>{{ $item->name }}</li>
+                            <li>{{ $item->name }} | Quantity: {{$item->quantity}}</li>
                         @endforeach
                     </ul>
 

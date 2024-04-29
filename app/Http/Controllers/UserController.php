@@ -10,16 +10,6 @@ use App\Models\Notification;
 use Illuminate\Support\Facades\View;
 class UserController extends Controller
 {
-    //boot treba prebaciti skroz u view da se odradjuje
-    public function boot()
-    {
-        View::composer('components.layout', function ($view) {
-            if (auth()->check() && auth()->user()->isAdmin === 1) {
-                $notifications = Notification::all();
-                $view->with('notifications', $notifications);
-            }
-        });
-    }
     public function profile()
     {
         return view('user-profile');
@@ -27,6 +17,7 @@ class UserController extends Controller
 
     public function logout()
     {
+        session()->forget('cart');
         auth()->logout();
         return redirect('/')->with('success', 'You are now logged out');
     }
@@ -55,7 +46,6 @@ class UserController extends Controller
         }
     }
 
-    //Kada se uradi posebna stranica za login treba redirektovati na login
     public function register(Request $request)
     {
         $incomingFields = $request->validate([

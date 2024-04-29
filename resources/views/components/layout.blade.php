@@ -1,5 +1,6 @@
 @php
-    use App\Models\Notification;use App\Models\User;
+    use App\Models\Notification;
+    use App\Models\User;
 @endphp
 
     <!DOCTYPE html>
@@ -10,7 +11,8 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge"/>
     <title>Grocery Store</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
-          integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous"/>
+          integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
+          crossorigin="anonymous"/>
     <script defer src="https://use.fontawesome.com/releases/v5.5.0/js/all.js"
             integrity="sha384-GqVMZRt5Gn7tB9D9q7ONtcp4gtHIUEW/yG7h98J7IpE3kpi+srfFyyB/04OV6pG0"
             crossorigin="anonymous"></script>
@@ -27,7 +29,7 @@
 
         @auth
             <div class="flex-row my-3 my-md-0">
-                <a href="/profile" class="mr-2 text-white">{{auth()->user()->username}}</a>
+                <a href="/profile" class="mr-2 text-white">{{ auth()->user()->username }}</a>
                 @if(auth()->user()->isAdmin === 1)
                     <a class="btn btn-sm btn-success mr-2" href="/create-product">Create Product</a>
                 @endif
@@ -36,9 +38,6 @@
                     <button class="btn btn-sm btn-secondary">Sign Out</button>
                 </form>
                 @if(auth()->user()->isAdmin === 1)
-                    <a class="btn btn-sm btn-secondary mr-2" href="/admin-dashboard">Admin Dashboard</a>
-                @endif
-                @if(auth()->user() && auth()->user()->isAdmin === 1)
                     <!-- Admin Notification Button -->
                     <div class="dropdown ml-auto">
                         <button class="btn btn-sm btn-info dropdown-toggle" type="button" id="adminNotificationDropdown"
@@ -48,6 +47,7 @@
                         <div class="dropdown-menu" aria-labelledby="adminNotificationDropdown">
                             <!-- Check if notifications are available -->
                             @if(isset($notifications) && $notifications->isNotEmpty())
+                                <!-- Check if notifications are available -->
                                 <!-- Loop through notifications and display each one -->
                                 @foreach($notifications as $notification)
                                     @php
@@ -57,7 +57,7 @@
                                         <!-- Check if user exists -->
                                     @if($user)
                                         <!-- Display the notification -->
-                                        <a class="dropdown-item" href="#">
+                                        <a class="dropdown-item" href="{{ route('notifications.markAsRead', $notification->id) }}">
                                             {{ $user->name }} just placed a new order!
                                         </a>
                                     @endif
@@ -65,6 +65,7 @@
                             @else
                                 <a class="dropdown-item" href="#">No notifications</a>
                             @endif
+
                         </div>
                     </div>
                 @endif
@@ -109,7 +110,7 @@
 @if(session()->has('success'))
     <div class='container container--narrow'>
         <div class="alert alert-success text-center">
-            {{session('success')}}
+            {{ session('success') }}
         </div>
     </div>
 @endif
@@ -117,7 +118,7 @@
 @if(session()->has('failure'))
     <div class='container container--narrow'>
         <div class="alert alert-danger text-center">
-            {{session('failure')}}
+            {{ session('failure') }}
         </div>
     </div>
 @endif
@@ -132,12 +133,12 @@
 
 @include('sidebar')
 
-{{$slot}}
+{{ $slot }}
 
 <!-- footer begins -->
 <footer class="border-top text-center small text-muted py-3">
-    <p class="m-0">Copyright &copy; {{date('Y')}}<a href="/" class="text-muted">Grocery Store</a>. All rights reserved.
-    </p>
+    <p class="m-0">Copyright &copy; {{ date('Y') }}<a href="/" class="text-muted">Grocery Store</a>. All rights
+        reserved.</p>
 </footer>
 
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"

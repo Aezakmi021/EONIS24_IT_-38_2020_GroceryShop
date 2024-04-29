@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Product;
 use Illuminate\Http\Request;
 use Stripe\Stripe;
 use Stripe\Checkout\Session; // Import the Session class from Stripe
@@ -65,6 +66,13 @@ class StripeController extends Controller
 
         // Clear the cart items from the session
         $request->session()->forget('cart');
+
+        // Reduce available_quantity for bought products
+        foreach ($cartItems as $cartItem) {
+            $product = Product::findOrFail($cartItem['product_id']);
+            $product->available_quantity -= $cartItem['quantity'];
+            $product->save();
+        }
 
         // Create a new order
         $order = new Order();

@@ -32,10 +32,8 @@
             Price: {{$product->price}}
             <br>
             Status: {{$product->status}}
-        </div>
-        <hr>
-        <div class="body-content">
-            Phone Number: {{$product->phonenumber}}
+            <br>
+            Available Quantity: {{$product->available_quantity}}
         </div>
         <hr>
         <div class="body-content">
@@ -45,11 +43,18 @@
             <div class="d-flex justify-content-center">
                 <form class='mx-3' action="/cart/add/{{$product->id}}" method="POST">
                     @csrf
+                    <div class="form-group">
+                        <label for="quantity">Quantity:</label>
+                        <input type="number" name="quantity" id="quantity" class="form-control" min="1" max="{{$product->available_quantity}}" value="1" required>
+                    </div>
                     <button class="btn btn-primary">Add to Cart</button>
+                    @if(session('error'))
+                        <span class="text-danger ml-2">{{ session('error') }}</span>
+                    @endif
                 </form>
                 <form action="/wishlist/add/{{$product->id}}" method="POST">
                     @csrf
-                    <button class="btn btn-primary">Add to Whislist</button>
+                    <button class="btn btn-primary">Add to Wishlist</button>
                 </form>
             </div>
         @endif

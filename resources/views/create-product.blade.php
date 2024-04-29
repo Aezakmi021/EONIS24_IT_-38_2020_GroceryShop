@@ -35,14 +35,6 @@
             @enderror
 
             <div class="form-group">
-                <label for="product-phonenumber" class="text-muted mb-1"><small>Phone Number</small></label>
-                <input  value="{{old('phonenumber')}}" name="phonenumber" id="product-phonenumber" class="form-control" type="text" placeholder="" autocomplete="off" />
-            </div>
-            @error('phonenumber')
-            <p class="m-0 small alert alert-danger shadow-sm">{{$message}}</p>
-            @enderror
-
-            <div class="form-group">
                 <label for="product-status" class="text-muted mb-1"><small>Status</small></label>
                 <select required name="status" class=" form-control" id="product-status" placeholder="Choose Product status">
                     <option value="" hidden selected>Select Product Status</option>
@@ -50,6 +42,14 @@
                     <option value="Unavailable">Unavailable</option>
                 </select>
             </div>
+
+            <div class="form-group">
+                <label for="available-quantity" class="text-muted mb-1"><small>Available Quantity</small></label>
+                <input  value="{{old('available_quantity')}}"  name="available_quantity" id="available-quantity" class="form-control" type="number" placeholder="Enter Available Quantity" autocomplete="off" />
+            </div>
+            @error('available_quantity')
+            <p class="m-0 small alert alert-danger shadow-sm">{{$message}}</p>
+            @enderror
 
             <div class="form-group">
                 <label for="categoryId" class="text-muted mb-1"><small>Category</small></label>

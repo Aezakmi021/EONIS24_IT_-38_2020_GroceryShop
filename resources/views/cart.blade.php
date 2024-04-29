@@ -9,7 +9,18 @@
                 <div class="list-group-item list-group-item-action">
                     <a href="/product/{{ $cartItem->id }}" class="list-group-item-action">{{ $cartItem->title }}</a>
                     <div class="body-content">
-                        Price: {{ $cartItem->price * $cartItem->pivot->quantity }}
+                        Price per item: {{ $cartItem->price }}
+                        <br>
+                        <form action="/cart/update/{{ $cartItem->id }}" method="POST">
+                            @csrf
+                            @method('PUT')
+                            <div class="form-group">
+                                <label for="quantity">Quantity:</label>
+                                <input type="number" name="quantity" id="quantity" class="form-control" min="1" max="{{ $cartItem->available_quantity }}" value="{{ $cartItem->pivot->quantity }}" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Update Quantity</button>
+                        </form>
+                        Total Price: {{ $cartItem->price * $cartItem->pivot->quantity }}
                         @php
                             $totalPrice += $cartItem->price * $cartItem->pivot->quantity;
                         @endphp

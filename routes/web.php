@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\OrderController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CartController;
@@ -84,8 +85,7 @@ Route::post('/logout', [UserController::class, 'logout'])->middleware('auth');
 
 Route::put('/update-profile', [UserController::class, 'updateProfile'])->middleware('auth');
 
-Route::get('/notifications', 'NotificationController@index')->name('notifications.index');
-Route::get('/notifications/{id}/mark-as-read', 'NotificationController@markAsRead')->name('notifications.markAsRead');
+Route::get('/notifications/{id}/mark-as-read', [NotificationController::class,'markAsRead'])->name('notifications.markAsRead')->middleware('admin.auth');
 
 
 

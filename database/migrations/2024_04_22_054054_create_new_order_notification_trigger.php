@@ -18,8 +18,8 @@ return new class extends Migration
                 DECLARE admin_id INT;
                 SELECT id INTO admin_id FROM users WHERE isAdmin = 1 LIMIT 1;
 
-                INSERT INTO notifications (order_id, user_id, created_at, updated_at)
-                VALUES (NEW.id, admin_id, NOW(), NOW());
+                INSERT INTO notifications (order_id, user_id, created_at, updated_at, read_at)
+                VALUES (NEW.id, admin_id, NOW(), NOW(), NULL);
             END;
         ');
     }

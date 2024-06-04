@@ -45,20 +45,29 @@
                             Notifications
                         </button>
                         <div class="dropdown-menu" aria-labelledby="adminNotificationDropdown">
-                            <!-- Check if notifications are available -->
-                            @if(isset($notifications) && $notifications->isNotEmpty())
+                            <!-- Fetch all notifications from the database -->
+                            @php
+                                $notifications = Notification::all();
+                            @endphp
+
                                 <!-- Check if notifications are available -->
+                            @if($notifications->isNotEmpty())
                                 <!-- Loop through notifications and display each one -->
                                 @foreach($notifications as $notification)
                                     @php
                                         // Retrieve the user who placed the order
                                         $user = User::find($notification->user_id);
                                     @endphp
-                                        <!-- Check if user exists -->
+                                        <!-- Check if the notification has been read -->
+                                    @if($notification->read_at)
+                                        <!-- Skip displaying this notification if it has been read -->
+                                        @continue
+                                    @endif
+                                    <!-- Check if user exists -->
                                     @if($user)
                                         <!-- Display the notification -->
                                         <a class="dropdown-item" href="{{ route('notifications.markAsRead', $notification->id) }}">
-                                            {{ $user->name }} just placed a new order!
+                                            {{ $user->username }} just placed a new order!
                                         </a>
                                     @endif
                                 @endforeach
@@ -133,7 +142,9 @@
 
 @include('sidebar')
 
-{{ $slot }}
+@isset($slot)
+    {{ $slot }}
+@endisset
 
 <!-- footer begins -->
 <footer class="border-top text-center small text-muted py-3">

@@ -16,6 +16,7 @@ return new class extends Migration
             $table->unsignedBigInteger('order_id');
             $table->unsignedBigInteger('user_id'); // Change admin_id to user_id
             $table->timestamps();
+            $table->dateTime('read_at')->nullable();
 
             $table->foreign('order_id')->references('id')->on('orders');
             $table->foreign('user_id')->references('id')->on('users');

@@ -7,7 +7,7 @@
         <div class="form-group">
           <label for="username-register" class="text-muted mb-1"><small>Username</small></label>
           <input value="{{old('username', $user->username)}}" name="username" id="username-register" class="form-control" type="text" placeholder="Pick a username" autocomplete="off" />
-          @error('username')  
+          @error('username')
             <p class='m-0 small alert alert-danger shadow-sm'>{{$message}}</p>
           @enderror
         </div>
@@ -37,7 +37,7 @@
         </div>
 
         <div class="row justify-content-center">
-          <button type="submit" class="py-3 mt-4 btn btn-lg btn-success ">Update User</button>
+          <button type="submit" class=" mt-4 btn btn-lg btn-light-magenta ">Update</button>
         </div>
       </form>
     </div>

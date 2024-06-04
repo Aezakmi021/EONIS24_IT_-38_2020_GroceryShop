@@ -42,14 +42,13 @@ Route::put('/cart/update/{productId}', [CartController::class, 'updateQuantity']
 // Admin Routes
     // Admin-Dashboard
     Route::get('/admin-dashboard', [UserController::class, 'adminPage'])->middleware('admin.auth');
-
     // Admin categories manipulation
     Route::get('/categories', [CategoryController::class, 'viewPage'])->middleware('admin.auth');
     Route::post('/create-category', [CategoryController::class, 'store'])->middleware('admin.auth');
     Route::delete('/categories/{category}', [CategoryController::class, 'delete'])->middleware('admin.auth');
 
 // View listing for specific category
-Route::get('/categories/{categoryId}', [CategoryController::class, 'showProducts'])->name('category.show');;
+    Route::get('/categories/{categoryId}', [CategoryController::class, 'showProducts'])->name('category.show');;
 
     //User manipulation routes
     Route::delete('/delete/{user}', [UserController::class, 'deleteUser'])->middleware('admin.auth');

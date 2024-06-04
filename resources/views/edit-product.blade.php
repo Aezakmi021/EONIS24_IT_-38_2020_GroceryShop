@@ -1,7 +1,7 @@
 <x-layout>
     <div class="container py-md-5 container--narrow">
         <form action="/product/{{$product->id}}" method="POST" enctype="multipart/form-data">
-            <p><small><strong><a href="/product/{{$product->id}}">&laquo; Back to product</a></strong></small></p>
+            <p><small><strong><a class="text-magenta" href="/product/{{$product->id}}">&laquo; Back to product</a></strong></small></p>
             @csrf
             @method('PUT')
             <div class="form-group">
@@ -62,7 +62,7 @@
                 </select>
             </div>
 
-            <button class="btn btn-primary">Save Changes on Product</button>
+            <button class="btn btn-light-magenta">Save Changes on Product</button>
         </form>
     </div>
 </x-layout>

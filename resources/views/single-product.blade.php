@@ -4,18 +4,18 @@
             <h2>{{$product->title}}</h2>
             @can('update', $product)
                 <span class="pt-2">
-                    <a href="/product/{{$product->id}}/edit" class="text-primary mr-2" data-toggle="tooltip" data-placement="top" title="Edit"><i class="fas fa-edit"></i></a>
+                    <a href="/product/{{$product->id}}/edit" class="text-dark mr-2" data-toggle="tooltip" data-placement="top" title="Edit"><i class="fas fa-edit"></i></a>
                     <form class="delete-post-form d-inline" action="/product/{{$product->id}}" method="POST">
                         @csrf
                         @method('DELETE')
-                        <button class="delete-post-button text-danger" data-toggle="tooltip" data-placement="top" title="Delete"><i class="fas fa-trash"></i></button>
+                        <button class="delete-post-button text-light-magenta" data-toggle="tooltip" data-placement="top" title="Delete"><i class="fas fa-trash"></i></button>
                     </form>
                 </span>
             @endcan
         </div>
 
         <p class="text-muted small mb-4">
-            Posted by <a href="#">{{$product->user->username}}</a> on {{$product->created_at->format('n/j/Y')}}
+            Posted by <a class="text-magenta" href="#">{{$product->user->username}}</a> on {{$product->created_at->format('n/j/Y')}}
         </p>
 
         <div class="body-content">
@@ -28,33 +28,31 @@
             </div>
         @endforeach
         <hr>
-        <div class="body-content">
-            Price: {{$product->price}}
-            <br>
-            Status: {{$product->status}}
-            <br>
-            Available Quantity: {{$product->available_quantity}}
+        <div class="body-content d-flex flex-column">
+            <div>Price: <strong> {{$product->price}} </strong> </div>
+            <div> Status: <strong> {{$product->status}} </strong> </div>
+            <div>  Available Quantity: <strong> {{$product->available_quantity}} </strong> </div>
         </div>
         <hr>
         <div class="body-content">
-            Category: {{ $product->category ? $product->category->categoryName : 'N/A' }}
+            Category: <strong> {{ $product->category ? $product->category->categoryName : 'N/A' }} </strong>
         </div>
         @if(auth()->user())
-            <div class="d-flex justify-content-center">
-                <form class='mx-3' action="/cart/add/{{$product->id}}" method="POST">
+            <div class="d-flex flex-gap flex-column ">
+                <form class="d-flex flex-column flex-gap" action="/cart/add/{{$product->id}}" method="POST">
                     @csrf
-                    <div class="form-group">
+                    <div class="">
                         <label for="quantity">Quantity:</label>
                         <input type="number" name="quantity" id="quantity" class="form-control" min="1" max="{{$product->available_quantity}}" value="1" required>
                     </div>
-                    <button class="btn btn-primary">Add to Cart</button>
+                    <button class="btn btn-light-magenta">Add to Cart</button>
                     @if(session('error'))
                         <span class="text-danger ml-2">{{ session('error') }}</span>
                     @endif
                 </form>
                 <form action="/wishlist/add/{{$product->id}}" method="POST">
                     @csrf
-                    <button class="btn btn-primary">Add to Wishlist</button>
+                    <button class="btn btn-light-magenta">Add to Wishlist</button>
                 </form>
             </div>
         @endif
@@ -76,7 +74,7 @@
                         <label for="comment">Add a Comment:</label>
                         <textarea class="form-control" id="comment" name="content" rows="3" required></textarea>
                     </div>
-                    <button type="submit" class="btn btn-primary">Submit Comment</button>
+                    <button type="submit" class="btn btn-light-magenta">Submit Comment</button>
                 </form>
             @else
                 <p class="mt-3">Please <strong>login</strong> to leave a comment.</p>

@@ -6,7 +6,17 @@ body,
 }
 
 .header-bar {
-  background-color: #f9322c;
+  background-color: #343a40;
+}
+
+
+.page-item.active .page-link {
+    background-color: #343a40;
+    border-color: #343a40;
+}
+
+.flex-gap{
+    gap:20px;
 }
 
 .container--narrow {
@@ -118,7 +128,7 @@ textarea.tall-textarea {
   border: none;
   padding: 0;
   margin: 0;
-} 
+}
 
  .pagination {
   display: flex;
@@ -184,7 +194,7 @@ textarea.tall-textarea {
   padding: 15px;
 }
 
-input[type=file] {  
+input[type=file] {
   display: block;
   width: 100%;
   height: calc(2.25rem + 2px);
@@ -196,10 +206,47 @@ input[type=file] {
   background-clip: padding-box;
   border: 1px solid #ced4da;
   border-radius: .25rem;
-  transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;;  
-}   
+  transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;;
+}
 
 input[type=file]::file-selector-button {
   border: none;
   background-color: #fff;
+}
+
+
+.dm-mono-light {
+    font-family: "DM Mono", monospace;
+    font-weight: 300;
+    font-style: normal;
+}
+
+.dm-mono-regular {
+    font-family: "DM Mono", monospace;
+    font-weight: 400;
+    font-style: normal;
+}
+
+.dm-mono-medium {
+    font-family: "DM Mono", monospace;
+    font-weight: 500;
+    font-style: normal;
+}
+
+
+.text-magenta {
+    color: #1B1A55 !important;
+}
+.btn-magenta {
+    background-color: #1B1A55 !important;
+    color: #FFF;
+}
+
+.text-light-magenta {
+    color: #9290C3;
+}
+
+.btn-light-magenta {
+    background-color: #9290C3;
+    color: #FFF;
 }

@@ -61,7 +61,7 @@
                 </select>
             </div>
 
-            <button class="btn btn-primary">Save New Product</button>
+            <button class="btn btn-light-magenta">Save New Product</button>
         </form>
     </div>
 </x-layout>

@@ -22,23 +22,23 @@
       </div>
 
       <div class="text-center">
-        <button class="btn btn-primary">Create Category</button>
+        <button class="btn btn-light-magenta">Create Category</button>
       </div>
     </form>
-      
-      
-      
+
+
+
     <div class="list-group">
       @foreach ($categories as $category)
         <h4 class="list-group-item list-group-item-action d-flex justify-content-around">
           <span>ID:<strong> {{$category['id']}}</strong></span>
-          <span>Name:<strong> <a href="categories/{{$category->id}}">{{$category['categoryName']}}</a></strong></span>
+          <span>Name:<strong> <a class="text-magenta" href="categories/{{$category->id}}">{{$category['categoryName']}}</a></strong></span>
           <form class="delete-post-form d-inline" action="/categories/{{$category->id}}" method="POST">
             @csrf
             @method('DELETE')
-            <button class="delete-post-button text-danger" data-toggle="tooltip" data-placement="top" title="Delete"><i class="fas fa-trash"></i></button>
+            <button class="delete-post-button text-danger" data-toggle="tooltip" data-placement="top" title="Delete"><i class="fas fa-trash text-light-magenta"></i></button>
           </form>
-        </h4>          
+        </h4>
       @endforeach
     </div>
   </div>

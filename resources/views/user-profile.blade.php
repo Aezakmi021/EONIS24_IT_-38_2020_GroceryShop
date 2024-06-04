@@ -47,10 +47,10 @@
                 <input type="password" class="form-control" id="password_confirmation" name="password_confirmation">
             </div>
 
-            <button type="submit" class="btn btn-primary">Update</button>
+            <button type="submit" class="btn btn-light-magenta">Update</button>
         </form>
 
         <!-- Add a button to view user orders -->
-        <a href="{{ route('my-orders') }}" class="btn btn-success mt-3">View My Orders</a>
+        <a href="{{ route('my-orders') }}" class="btn btn-dark mt-3">View My Orders</a>
     </div>
 </x-layout>

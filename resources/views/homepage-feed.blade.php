@@ -4,18 +4,18 @@
             <div class="form-group">
                 <input type="text" class="form-control form-control-sm" name="term" placeholder="Search" />
             </div>
-            <button type="submit" class="btn btn-primary btn-sm ml-2">Search</button>
+            <button type="submit" class="btn btn-dark btn-sm ml-2">Search</button>
         </form>
     </div>
 
     <div class="container py-md-5 container--narrow ">
-        <div class="d-flex justify-content-center">
-            <h2>Hello <strong>{{ auth()->user()  ? auth()->user()->username : 'Guest' }}</strong>, Welcome to Grocery Store.</h2>
+        <div class="d-flex justify-content-center dm-mono-medium text-center">
+            <h2>Hello <strong class="text-light-magenta">{{ auth()->user()  ? auth()->user()->username : 'Guest' }}</strong>, Welcome to Grocery Store.</h2>
         </div>
-        <div class="list-group">
+        <div class="list-group d-flex flex-gap">
             @foreach ($products as $product)
-                <a href="/product/{{$product->id}}" class="list-group-item list-group-item-action">
-                    <div class="d-flex align-items-center">
+                <a href="/product/{{$product->id}}" class="list-group-item list-group-item-action shadow ">
+                    <div class="d-flex  align-items-center">
                         @if($product->images->first()?->image_path)
                             <img src="{{ asset('storage/' . $product->images->first()->image_path) }}" alt="{{ $product->title }}" style="width: 100px; height: 100px;" class="mr-3">
                         @else

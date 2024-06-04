@@ -3,7 +3,23 @@
         <div class="d-flex justify-content-center">
             <h2>Hello <strong class="text-magenta">{{ auth()->user() ? auth()->user()->username : 'Guest' }}</strong>, Welcome to your Cart.</h2>
         </div>
-        <div class="list-group shadow">
+        <div class="d-flex justify-content-center flex-column ">
+            <p>
+                <button class="btn btn-light-magenta" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+                    Wishlist
+                </button>
+            </p>
+            <div class="collapse" id="collapseExample">
+                @foreach($wishlistItems as $item)
+                    <a href="/product/{{$item->id}}" class="card card-body text-dark">
+                        <p> Product : <strong>{{$item->title}}</strong> </p>
+                        <p>Price : <strong>{{$item->price}}</strong> </p>
+                    </a>
+                @endforeach
+            </div>
+        </div>
+
+        <div class="list-group shadow my-2">
             @php $totalPrice = 0 @endphp
             @forelse ($cartItems as $cartItem)
                 <div class="list-group-item list-group-item-action">
@@ -38,19 +54,21 @@
                     </div>
                 </div>
             @empty
-                <p>No items in cart</p>
+                <p class="list-group-item">No items in cart</p>
             @endforelse
             <div class="d-flex justify-content-center align-items-center list-group-item total-price">
                 Total Price: <strong class="ml-1"> {{ $totalPrice }} </strong>
             </div>
         </div>
 
-        <div class="d-flex justify-content-center m-3">
+        <div class="d-flex my-3 ">
             <form action="/checkout" method="POST">
                 @csrf
                 <input type="hidden" name="total_price" id="total_price" value="{{ $totalPrice }}">
-                <button type="submit" class="btn btn-magenta text-white">Checkout</button>
+                <button type="submit" class="btn btn-light-magenta text-white">Checkout</button>
             </form>
         </div>
+
     </div>
+
 </x-layout>

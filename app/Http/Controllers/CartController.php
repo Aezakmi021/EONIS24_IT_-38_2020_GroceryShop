@@ -4,12 +4,19 @@ namespace App\Http\Controllers;
 
 use App\Models\Cart;
 use App\Models\Product;
+use App\Http\Services\WishlistServices;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class CartController extends Controller
 {
 
+    protected $wishlistServices;
+
+    public function __construct(WishlistServices $wishlistService)
+    {
+        $this->wishlistServices = $wishlistService;
+    }
     public function viewPage(Request $request)
     {
         $userId = auth()->user()->id;
@@ -34,7 +41,9 @@ class CartController extends Controller
             $request->session()->put('cart', $cartData);
         }
 
-        return view('cart', ['cartItems' => $cartItems]);
+        $products = $this->wishlistServices->userResults();
+
+        return view('cart', ['cartItems' => $cartItems, 'wishlistItems' => $products ]);
     }
 
 

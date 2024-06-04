@@ -7,6 +7,7 @@ use Illuminate\Pagination\Paginator;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Validator;
  use Illuminate\Support\Facades\View;
+ use App\Http\Services\WishlistServices;
 // use View;
 
 
@@ -17,7 +18,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        $this->app->singleton(WishlistService::class, function ($app) {
+            return new WishlistServices();
+        });
     }
 
     /**
@@ -27,12 +30,12 @@ class AppServiceProvider extends ServiceProvider
     {
         //
         Paginator::useBootstrap();
-        
-        
+
+
         View::composer('*', function ($view) {
         $sidebarCategories = Category::with('subcategories')->whereNull('parent_id')->get();
-        $view->with('sidebarCategories', $sidebarCategories);  
-         }); 
+        $view->with('sidebarCategories', $sidebarCategories);
+         });
 
          Validator::extend('phone_number', function ($attribute, $value, $parameters, $validator)
         {
@@ -44,6 +47,6 @@ class AppServiceProvider extends ServiceProvider
             $phoneNumber = substr($value, 1);
             return preg_match('/^\d{8,12}$/', $phoneNumber) === 1;
         });
-         
+
     }
 }

@@ -1,6 +1,6 @@
 <x-layout>
   <div class="container py-md-5 container--narrow">
-    <form class="my-3" action="/create-category" method="POST">
+    <form class="my-3" action="{{route('create-category') }}" method="POST">
       @csrf
       <div class="form-group">
         <label for="category-categoryName" class="text-muted mb-1"><small>Name</small></label>
@@ -32,8 +32,8 @@
       @foreach ($categories as $category)
         <h4 class="list-group-item list-group-item-action d-flex justify-content-around">
           <span>ID:<strong> {{$category['id']}}</strong></span>
-          <span>Name:<strong> <a class="text-magenta" href="categories/{{$category->id}}">{{$category['categoryName']}}</a></strong></span>
-          <form class="delete-post-form d-inline" action="/categories/{{$category->id}}" method="POST">
+          <span>Name:<strong> <a class="text-magenta" href="{{ route('category.show', ['categoryId' => $category->id])  }}">{{$category['categoryName']}}</a></strong></span>
+          <form class="delete-post-form d-inline" action="{{ route('delete-category', ['category' => $category->id])  }}" method="POST">
             @csrf
             @method('DELETE')
             <button class="delete-post-button text-danger" data-toggle="tooltip" data-placement="top" title="Delete"><i class="fas fa-trash text-light-magenta"></i></button>

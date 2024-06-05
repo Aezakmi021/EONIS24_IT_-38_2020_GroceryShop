@@ -11,7 +11,7 @@
                     <button type="submit" class="btn btn-link dm-mono-medium text-light-magenta">{{ $sidebarCategory->categoryName }}</button>
                 </form>
                 @if ($sidebarCategory->subcategories->count() > 0)
-                    <ul class="list-unstyled">
+                    <ul class="list-unstyled sub-menu">
                         @include('subcategories', ['subcategories' => $sidebarCategory->subcategories])
                     </ul>
                 @endif

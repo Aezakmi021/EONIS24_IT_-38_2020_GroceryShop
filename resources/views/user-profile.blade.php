@@ -4,34 +4,15 @@
             {{ auth()->user()->username }}
         </h2>
 
-        <!-- Display user registration date -->
         <p>Registered on: {{ auth()->user()->created_at->format('F j, Y') }}</p>
 
-        <!-- Check for success message and display it -->
-        <!-- No need to handle success message here, as it's handled in layout.blade.php -->
-
-        <!-- Display validation errors -->
-        @if ($errors->any())
-            <div class="alert alert-danger">
-                <ul>
-                    @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
-            </div>
-        @endif
-
-        <!-- Form for email and password editing -->
-        <form action="/update-profile" method="POST">
+        <form action="{{ route('profile.update', ['user' => auth()->user()->id]) }}" method="POST">
             @csrf
             @method('PUT')
 
             <div class="form-group">
                 <label for="email">Email:</label>
-                <input type="email" class="form-control" id="email" name="email" value="{{ auth()->user()->email }}">
-                @error('email')
-                <span class="text-danger">{{ $message }}</span>
-                @enderror
+                <input type="email" disabled class="form-control" id="email" name="email" value="{{ auth()->user()->email }}">
             </div>
 
             <div class="form-group">

@@ -1,7 +1,7 @@
 <x-layout>
   <div class="container py-md-12">
     <div class="col-lg-12 pl-lg-5 pb-3 py-lg-5">
-      <form action="/edit-user/{{$user->id}}" method="POST" id="registration-form">
+      <form action="{{ route('edit-user.edit', ['user' => $user->id]) }}" method="POST" id="registration-form">
         @csrf
         @method('PUT')
         <div class="form-group">

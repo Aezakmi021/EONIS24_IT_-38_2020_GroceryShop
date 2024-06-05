@@ -42,30 +42,34 @@ Route::put('/cart/update/{productId}', [CartController::class, 'updateQuantity']
 
 // Admin Routes
     // Admin-Dashboard
-    Route::get('/admin-dashboard', [UserController::class, 'adminPage'])->middleware('admin.auth');
+Route::prefix('admin-dashboard')->middleware('admin.auth')->group(function () {
+    // Admin dashboard route
+    Route::get('/', [UserController::class, 'adminPage']);
+
     // Admin categories manipulation
-    Route::get('/categories', [CategoryController::class, 'viewPage'])->middleware('admin.auth');
-    Route::post('/create-category', [CategoryController::class, 'store'])->middleware('admin.auth');
-    Route::delete('/categories/{category}', [CategoryController::class, 'delete'])->middleware('admin.auth');
+    Route::post('/create-category', [CategoryController::class, 'store'])->name('create-category');
+    Route::delete('/categories/{category}', [CategoryController::class, 'delete'])->name('delete-category');
 
-// View listing for specific category
-    Route::get('/categories/{categoryId}', [CategoryController::class, 'showProducts'])->name('category.show');;
+    // User manipulation routes
+    Route::delete('/delete/{user}', [UserController::class, 'deleteUser'])->name('delete-user');
+    Route::get('/edit-user/{user}/edit', [UserController::class, 'viewUser'])->name('edit-user.edit');
+    Route::put('/edit-user/{user}', [UserController::class, 'update'])->name('profile.update');
+    Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
+    Route::put('/orders/{order}/update-status', [OrderController::class, 'updateStatus']);
 
-    //User manipulation routes
-    Route::delete('/delete/{user}', [UserController::class, 'deleteUser'])->middleware('admin.auth');
-    Route::get('/edit-user/{user}/edit', [UserController::class, 'viewUser'])->middleware('admin.auth');
-    Route::put('/edit-user/{user}', [UserController::class, 'update'])->middleware('admin.auth');
 
-    //Order routes for admin
-    Route::get('/orders', [OrderController::class, 'index'])->name('orders.index')->middleware('admin.auth');
-    Route::put('/orders/{order}/update-status', [OrderController::class, 'updateStatus'])->middleware('admin.auth');
+    Route::get('/create-product', [ProductController::class, 'showCreateForm'])->name('create.product');
+    Route::post('/create-product', [ProductController::class, 'storeProduct']);
+});
 
-    //Product manipulation
-    Route::get('/create-product', [ProductController::class, 'showCreateForm'])->middleware('admin.auth');
-    Route::post('/create-product', [ProductController::class, 'storeProduct'])->middleware('admin.auth');
-    Route::delete('/product/{product}', [ProductController::class, 'delete'])->middleware('admin.auth');
-    Route::get('/product/{product}/edit',[ProductController::class, 'showEditForm'])->middleware('admin.auth');
-    Route::put('/product/{product}', [ProductController::class, 'update'])->middleware('admin.auth');
+
+    Route::get('/categories', [CategoryController::class, 'viewPage'])->name('categories');
+    Route::get('/categories/{categoryId}', [CategoryController::class, 'showProducts'])->name('category.show');
+
+
+    Route::delete('/product/{product}', [ProductController::class, 'delete']);
+    Route::get('/product/{product}/edit',[ProductController::class, 'showEditForm']);
+    Route::put('/product/{product}', [ProductController::class, 'update']);
 
 // Product routes for customers
 Route::get('/search',[ProductController::class, 'search']);
@@ -76,14 +80,19 @@ Route::get('/product/{product}', [ProductController::class, 'viewSingleProduct']
 //Odvojiti login od homepage-a
 Route::get('/', [UserController::class, 'showCorrectHomepage'])->name('login');
 Route::get('/register', function () { return view('register'); })->middleware('guest');
-Route::get('/profile', [UserController::class, 'profile'])->middleware('auth');
-Route::get('/my-orders', [UserController::class, 'viewOrders'])->name('my-orders')->middleware('auth');
+
+// profile prefix group
+Route::prefix('profile')->middleware('auth')->group(function () {
+    Route::get('/', [UserController::class, 'profile'])->name('profile');
+    Route::put('/update-profile', [UserController::class, 'updateProfile']);
+    Route::get('/my-orders', [UserController::class, 'viewOrders'])->name('my-orders');
+
+});
 
 Route::post('/register', [UserController::class, 'register'])->middleware('guest');
 Route::post('/login', [UserController::class, 'login'])->middleware('guest');
 Route::post('/logout', [UserController::class, 'logout'])->middleware('auth');
 
-Route::put('/update-profile', [UserController::class, 'updateProfile'])->middleware('auth');
 
 Route::get('/notifications/{id}/mark-as-read', [NotificationController::class,'markAsRead'])->name('notifications.markAsRead')->middleware('admin.auth');
 

@@ -1,5 +1,8 @@
 <x-layout>
-    <div class="container py-md-5 container--narrow">
+    <div class="container d-flex justify-content-center py-md-5 container--narrow">
+        @if( count($orders) == 0)
+            <h1 >You didn't make any orders.</h1>
+        @endif
         @foreach ($orders as $order)
             @if ($order->user_id === auth()->user()->id)
                 <div class="mb-4">

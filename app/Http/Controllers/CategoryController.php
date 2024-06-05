@@ -10,7 +10,7 @@ class CategoryController extends Controller
     public function delete(Category $category)
     {
         $category->delete();
-        return redirect('/categories')->with('success', 'Category is deleted');
+        return redirect(route('categories'))->with('success', 'Category is deleted');
     }
 
     public function store(Request $request)

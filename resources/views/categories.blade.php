@@ -1,5 +1,9 @@
 <x-layout>
   <div class="container py-md-5 container--narrow">
+      <div class="text-center">
+          <a href="{{ route('admin-dashboard') }}" class="btn btn-light-magenta text-white">Users</a>
+          <a href="{{route('orders.index') }}" class="btn btn-light-magenta  text-white">Orders</a>
+      </div>
     <form class="my-3" action="{{route('create-category') }}" method="POST">
       @csrf
       <div class="form-group">

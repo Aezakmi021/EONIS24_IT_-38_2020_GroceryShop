@@ -44,7 +44,7 @@ Route::put('/cart/update/{productId}', [CartController::class, 'updateQuantity']
     // Admin-Dashboard
 Route::prefix('admin-dashboard')->middleware('admin.auth')->group(function () {
     // Admin dashboard route
-    Route::get('/', [UserController::class, 'adminPage']);
+    Route::get('/', [UserController::class, 'adminPage'])->name('admin-dashboard');
 
     // Admin categories manipulation
     Route::post('/create-category', [CategoryController::class, 'store'])->name('create-category');
@@ -84,7 +84,7 @@ Route::get('/register', function () { return view('register'); })->middleware('g
 // profile prefix group
 Route::prefix('profile')->middleware('auth')->group(function () {
     Route::get('/', [UserController::class, 'profile'])->name('profile');
-    Route::put('/update-profile', [UserController::class, 'updateProfile']);
+    Route::put('/update-profile', [UserController::class, 'updateProfile'])->name('update-profile');
     Route::get('/my-orders', [UserController::class, 'viewOrders'])->name('my-orders');
 
 });

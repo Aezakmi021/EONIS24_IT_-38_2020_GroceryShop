@@ -6,7 +6,7 @@
 
         <p>Registered on: {{ auth()->user()->created_at->format('F j, Y') }}</p>
 
-        <form action="{{ route('profile.update', ['user' => auth()->user()->id]) }}" method="POST">
+        <form action="{{ route('update-profile', ['user' => auth()->user()->id]) }}" method="POST">
             @csrf
             @method('PUT')
 

@@ -1,8 +1,8 @@
 <x-layout>
     <div class="container py-md-5 container--narrow">
         <div class="text-center">
-            <a href="/categories" class="btn btn-light-magenta text-white">Categories</a>
-            <a href="/orders" class="btn btn-dark text-white">Orders</a> <!-- New Orders Button -->
+            <a href="{{ route('admin-dashboard') }}" class="btn btn-light-magenta text-white">Users</a>
+            <a href="{{route('categories') }}" class="btn btn-light-magenta  text-white">Categories</a>
         </div>
 
         @if(session('error'))

@@ -40,7 +40,7 @@ class UserController extends Controller
         if (auth()->attempt(['username' => $loginusername, 'password' => $loginpassword])) {
             $request->session()->regenerate();
             session(['cart' => []]);
-            return view('user-profile', ['username' => $user->username])->with('success', 'You are now logged in');
+            return redirect()->intended(route('profile'))->with('success', 'You are now logged in');
         } else {
             return redirect('/')->with('failure', 'Invalid login.');
         }
@@ -72,22 +72,15 @@ class UserController extends Controller
 
     public function updateProfile(Request $request)
     {
+
         $request->validate([
-            'email' => ['sometimes', 'required', 'email', Rule::unique('users')->ignore(auth()->id())],
-            'password' => ['sometimes', 'nullable', 'string', 'min:8', 'confirmed'],
+            'password' => ['required', 'nullable', 'string', 'min:8', 'confirmed'],
         ], [
-            'email.required' => 'Email is required.',
-            'email.email' => 'Invalid email format.',
-            'email.unique' => 'The email has already been taken.',
             'password.min' => 'Password must be at least 8 characters long.',
-            'password.confirmed' => 'Passwords do not match.'
+            'password.confirmed' => 'Passwords do not match.',
         ]);
 
         $user = auth()->user();
-
-        if ($request->filled('email')) {
-            $user->email = $request->email;
-        }
 
         if ($request->filled('password')) {
             $user->password = bcrypt($request->password);

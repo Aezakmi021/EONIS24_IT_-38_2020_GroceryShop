@@ -39,9 +39,13 @@
                     @csrf
                     <button class="btn btn-dark btn-light">Sign Out</button>
                 </form>
-                @if(isset(auth()->user()->isAdmin))
+                @if(auth()->user()->isAdmin === 1)
                     <a class="btn btn-sm btn-light mr-2" href="{{ route('create.product') }}">Create Product</a>
                 @endif
+                @if(auth()->user()->isAdmin === 1)
+                    <a class="btn btn-sm btn-light mr-2" href="{{ route('admin-dashboard') }}">Admin Dashboard</a>
+                @endif
+
                 @if(auth()->user())
 
                     <div class="d-flex justify-content-center flex-row my-3 py-3 my-md-0 m-3 dm-mono-regular">

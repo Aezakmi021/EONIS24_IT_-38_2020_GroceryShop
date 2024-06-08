@@ -12,6 +12,7 @@ class ProductsTableSeeder extends Seeder
     public function run()
     {
         $faker = Faker::create();
+        $statuses = ['Available', 'Unavailable'];
 
         foreach (range(1, 10) as $index) {
             DB::table('products')->insert([
@@ -19,9 +20,9 @@ class ProductsTableSeeder extends Seeder
                 'body' => $faker->paragraph,
                 'price' => $faker->randomNumber(2),
                 'available_quantity' => $faker->randomNumber(2),
-                'status' => $faker->word,
+                'status' => $statuses[array_rand($statuses)],
                 'user_id' => 11, // ID 11 is admin user
-                'category_id' => $faker->numberBetween(1, 5), // Assuming you have 15 categories
+                'category_id' => $faker->numberBetween(1, 5),
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);

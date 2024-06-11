@@ -65,7 +65,7 @@
                         </button>
                         <div class="dropdown-menu" aria-labelledby="adminNotificationDropdown">
                             @php
-                                $notifications = Notification::all();
+                                $notifications = Notification::whereNull('read_at')->get();
                             @endphp
 
                             @if($notifications->isNotEmpty())
@@ -73,9 +73,6 @@
                                     @php
                                         $user = User::find($notification->user_id);
                                     @endphp
-                                    @if($notification->read_at)
-                                        @continue
-                                    @endif
                                     @if($user)
                                         <a class="dropdown-item" href="{{ route('notifications.markAsRead', $notification->id) }}">
                                             {{ $user->username }} just placed a new order!
@@ -85,7 +82,6 @@
                             @else
                                 <a class="dropdown-item" href="#">No notifications</a>
                             @endif
-
                         </div>
                     </div>
                 @endif

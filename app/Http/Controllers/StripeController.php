@@ -82,7 +82,7 @@ class StripeController extends Controller
         $order->save();
 
         // Redirect to success view
-        return view('success')->with('success', 'Product paid successfully!');
+        return view('success')->with('success', 'Order placed successfully.');
     }
 
 }

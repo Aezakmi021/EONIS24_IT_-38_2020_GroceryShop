@@ -59,6 +59,11 @@ class CartController extends Controller
             // Fetch product details
             $product = Product::findOrFail($productId);
 
+            // Check if the product status is 'Unavailable'
+            if ($product->status === 'Unavailable') {
+                return redirect()->back()->with('error', 'The product is currently unavailable.')->setStatusCode(422);
+            }
+
             // Retrieve the user's cart or create a new one if it doesn't exist
             $userCart = Cart::firstOrCreate(['user_id' => $userId]);
 

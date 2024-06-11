@@ -120,8 +120,15 @@ class UserController extends Controller
     public function update(User $user, Request $request)
     {
         $incomingFields = $request->validate([
-            'username' => 'required|unique:users,username',
-            'email' => 'required|email|unique:users,email',
+            'username' => [
+                'required',
+                Rule::unique('users')->ignore($user->id),
+            ],
+            'email' => [
+                'required',
+                'email',
+                Rule::unique('users')->ignore($user->id),
+            ],
             'password' => 'nullable|min:6|confirmed',
         ]);
 

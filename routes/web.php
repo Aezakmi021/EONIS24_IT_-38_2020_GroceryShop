@@ -52,7 +52,7 @@ Route::prefix('admin-dashboard')->middleware('admin.auth')->group(function () {
 
     // User manipulation routes
     Route::delete('/delete/{user}', [UserController::class, 'deleteUser'])->name('delete-user');
-    Route::get('/edit-user/{user}/edit', [UserController::class, 'viewUser'])->name('edit-user.edit');
+    Route::get('/edit-user/{user}', [UserController::class, 'viewUser'])->name('edit-user.edit');
     Route::put('/edit-user/{user}', [UserController::class, 'update'])->name('profile.update');
     Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
     Route::put('/orders/{order}/update-status', [OrderController::class, 'updateStatus']);
@@ -63,7 +63,7 @@ Route::prefix('admin-dashboard')->middleware('admin.auth')->group(function () {
 });
 
 
-    Route::get('/categories', [CategoryController::class, 'viewPage'])->name('categories');
+    Route::get('/categories', [CategoryController::class, 'viewPage'])->name('categories')->middleware('admin.auth');
     Route::get('/categories/{categoryId}', [CategoryController::class, 'showProducts'])->name('category.show');
 
 
@@ -77,7 +77,6 @@ Route::post('/product/{product}/comments', [ProductController::class, 'storeComm
 Route::get('/product/{product}', [ProductController::class, 'viewSingleProduct']);
 
 // User Routes
-//Odvojiti login od homepage-a
 Route::get('/', [UserController::class, 'showCorrectHomepage'])->name('login');
 Route::get('/register', function () { return view('register'); })->middleware('guest');
 

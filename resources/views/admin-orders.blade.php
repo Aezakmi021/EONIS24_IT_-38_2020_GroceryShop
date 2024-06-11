@@ -15,6 +15,10 @@
                     <h2>Order ID: {{ $order->id }}</h2>
                     <p>Status: {{ $order->status }}</p>
                     <p>User: {{ $order->user->username }}</p>
+                    <p>Shipping address: {{ $order->shipping_address }} </p>
+                    <p>City: {{ $order->city }}</p>
+                    <p>Country: {{ $order->country }}</p>
+                    <p>Zip Code: {{ $order->zip_code }}</p>
                     <ul>
                         @foreach (json_decode($order->items) as $item)
                             <li>{{ $item->name }} | Quantity: {{$item->quantity}}</li>

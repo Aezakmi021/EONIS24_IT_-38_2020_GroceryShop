@@ -61,14 +61,27 @@
             </div>
         </div>
 
-        <div class="d-flex my-3 ">
-            <form action="/checkout" method="POST">
-                @csrf
-                <input type="hidden" name="total_price" id="total_price" value="{{ $totalPrice }}">
-                <button type="submit" class="btn btn-light-magenta text-white">Checkout</button>
-            </form>
-        </div>
-
+        <!-- Shipping address form -->
+        <form action="/checkout" method="POST" class="my-3">
+            @csrf
+            <input type="hidden" name="total_price" id="total_price" value="{{ $totalPrice }}">
+            <div class="form-group">
+                <label for="shippingAddress">Shipping Address</label>
+                <input type="text" class="form-control" id="shippingAddress" name="shippingAddress" required>
+            </div>
+            <div class="form-group">
+                <label for="city">City</label>
+                <input type="text" class="form-control" id="city" name="city" required>
+            </div>
+            <div class="form-group">
+                <label for="country">Country</label>
+                <input type="text" class="form-control" id="country" name="country" required>
+            </div>
+            <div class="form-group">
+                <label for="zipCode">Zip Code</label>
+                <input type="text" class="form-control" id="zipCode" name="zipCode" required>
+            </div>
+            <button type="submit" class="btn btn-light-magenta text-white" id="checkoutBtn">Checkout</button>
+        </form>
     </div>
-
 </x-layout>

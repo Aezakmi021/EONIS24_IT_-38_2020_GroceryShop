@@ -43,7 +43,7 @@ class StripeController extends Controller
         $session = Session::create([
             'line_items' => $lineItems,
             'mode' => 'payment',
-            'success_url' => route('success'),
+            'success_url' => route('success', $request->all()),
             'cancel_url' => route('cart'),
         ]);
 
@@ -52,8 +52,13 @@ class StripeController extends Controller
 
     public function success(Request $request)
     {
+        $requestParameters = $request->all();
         // Get the cart items from the session
         $cartItems = $request->session()->get('cart', []);
+        $shippingAddress = $request->input('shippingAddress');
+        $city = $request->input('city');
+        $country = $request->input('country');
+        $zipCode = $request->input('zipCode');
 
         // If the cart is empty, redirect back with an error message
         if (empty($cartItems)) {
@@ -74,9 +79,14 @@ class StripeController extends Controller
             $product->save();
         }
 
+
         // Create a new order
         $order = new Order();
         $order->user_id = $userId;
+        $order->shipping_address = $shippingAddress;
+        $order->city = $city;
+        $order->country = $country;
+        $order->zip_code = $zipCode;
         $order->items = json_encode($cartItems); // Store cart items as JSON
         // Add other order details as needed
         $order->save();

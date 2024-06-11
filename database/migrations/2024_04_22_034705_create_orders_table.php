@@ -16,6 +16,10 @@ return new class extends Migration
             $table->unsignedBigInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->string('status')->default('processing');
+            $table->string('shipping_address'); // Add shipping address field
+            $table->string('city'); // Add city field
+            $table->string('country'); // Add country field
+            $table->string('zip_code'); // Add zip code field
             $table->json('items'); // Store order items as JSON
             $table->timestamps();
         });

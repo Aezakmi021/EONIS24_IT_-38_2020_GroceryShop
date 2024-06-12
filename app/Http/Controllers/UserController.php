@@ -109,7 +109,7 @@ class UserController extends Controller
     public function deleteUser(User $user)
     {
         $user->delete();
-        return redirect('/admins-only')->with('success', 'User successfully deleted');
+        return redirect('/admin-dashboard')->with('success', 'User successfully deleted');
     }
 
     public function viewUser(User $user)

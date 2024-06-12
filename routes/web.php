@@ -49,17 +49,19 @@ Route::prefix('admin-dashboard')->middleware('admin.auth')->group(function () {
     // Admin categories manipulation
     Route::post('/create-category', [CategoryController::class, 'store'])->name('create-category');
     Route::delete('/categories/{category}', [CategoryController::class, 'delete'])->name('delete-category');
+    Route::get('/edit-categories/{category}', [CategoryController::class, 'viewCategory'])->name('edit-category');
+    Route::put('/categories/{category}', [CategoryController::class, 'update'])->name('update-category');
 
     // User manipulation routes
     Route::delete('/delete/{user}', [UserController::class, 'deleteUser'])->name('delete-user');
     Route::get('/edit-user/{user}', [UserController::class, 'viewUser'])->name('edit-user.edit');
     Route::put('/edit-user/{user}', [UserController::class, 'update'])->name('profile.update');
     Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
-    Route::put('/orders/{order}/update-status', [OrderController::class, 'updateStatus']);
+    Route::put('/orders/{order}', [OrderController::class, 'updateStatus'])->name('orders.update.status');
 
 
     Route::get('/create-product', [ProductController::class, 'showCreateForm'])->name('create.product');
-    Route::post('/create-product', [ProductController::class, 'storeProduct']);
+    Route::post('/create-product', [ProductController::class, 'storeProduct'])->name('create.product.save');
 });
 
 

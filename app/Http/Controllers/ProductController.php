@@ -85,7 +85,7 @@ class ProductController extends Controller
     public function delete(Product $product)
     {
         $product->delete();
-        return redirect('/profile/' . auth()->user()->username)->with('success', 'Product is deleted')->setStatusCode(200);
+        return redirect('/')->with('success', 'Product is deleted')->setStatusCode(200);
     }
 
 

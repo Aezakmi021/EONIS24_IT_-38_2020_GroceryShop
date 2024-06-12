@@ -1,6 +1,6 @@
 <x-layout>
     <div class="container py-md-5 container--narrow">
-        <form action="/create-product" method="POST" enctype="multipart/form-data">
+        <form action="{{ route('create.product.save') }}" method="POST" enctype="multipart/form-data">
             @csrf
             <div class="form-group">
                 <label for="product-title" class="text-muted mb-1"><small>Title</small></label>

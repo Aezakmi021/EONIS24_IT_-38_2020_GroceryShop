@@ -42,6 +42,7 @@
             @method('DELETE')
             <button class="delete-post-button text-danger" data-toggle="tooltip" data-placement="top" title="Delete"><i class="fas fa-trash text-light-magenta"></i></button>
           </form>
+            <a href="{{ route('edit-category', ['category' => $category->id])  }}" class="text-primary mr-2" data-toggle="tooltip" data-placement="top" title="Edit"><i class="fas fa-edit text-dark"></i></a>
         </h4>
       @endforeach
     </div>

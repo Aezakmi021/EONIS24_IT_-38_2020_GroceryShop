@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Category;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class CategoryController extends Controller
 {
@@ -44,5 +45,42 @@ class CategoryController extends Controller
 
         $products = $mainCategory->allProducts();
         return view('category-products', compact('mainCategory', 'products'));
+    }
+
+
+    public function update(Category $category, Request $request)
+    {
+        $incomingFields = $request->validate([
+            'categoryName' => [
+                'required',
+                Rule::unique('categories')->ignore($category->id),
+            ],
+        ]);
+
+        $incomingFields['categoryName'] = strip_tags($incomingFields['categoryName']);
+
+        // Check if the provided username already exists for another user
+        if ($category->categoryName !== $incomingFields['categoryName'] && Category::where('categoryName', $incomingFields['categoryName'])->exists()) {
+            return back()->with('failure', 'Category name already exists.')->setStatusCode(409); // Conflict
+        }
+
+
+        try {
+            $category->update([
+                'categoryName' => $incomingFields['categoryName'],
+            ]);
+
+                $category->save();
+
+            return back()->with('success', 'Category details updated successfully.');
+        } catch (QueryException $e) {
+            // If any other database error occurs, return a generic error message
+            return back()->with('failure', 'An error occurred while updating category details.')->setStatusCode(500); // Internal Server Error
+        }
+    }
+
+    public function viewCategory(Category $category)
+    {
+        return view('edit-categories', ['category' => $category]); // No need to set status code for views
     }
 }

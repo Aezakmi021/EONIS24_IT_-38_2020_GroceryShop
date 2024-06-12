@@ -26,7 +26,7 @@
                     </ul>
 
                     @if(auth()->user()->isAdmin === 1)
-                        <form action="/orders/{{ $order->id }}/update-status" method="POST">
+                        <form action="{{route('orders.update.status', ['order'=>$order->id])}}" method="POST">
                             @csrf
                             @method('PUT')
                             <div class="form-group">

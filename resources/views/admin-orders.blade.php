@@ -2,7 +2,7 @@
     <div class="container py-md-5 container--narrow">
         <div class="text-center">
             <a href="{{ route('admin-dashboard') }}" class="btn btn-light-magenta text-white">Users</a>
-            <a href="{{route('categories') }}" class="btn btn-light-magenta  text-white">Categories</a>
+            <a href="{{ route('categories') }}" class="btn btn-light-magenta text-white">Categories</a>
         </div>
 
         @if(session('error'))
@@ -21,12 +21,12 @@
                     <p>Zip Code: {{ $order->zip_code }}</p>
                     <ul>
                         @foreach (json_decode($order->items) as $item)
-                            <li>{{ $item->name }} | Quantity: {{$item->quantity}}</li>
+                            <li>{{ $item->name }} | Quantity: {{ $item->quantity }}</li>
                         @endforeach
                     </ul>
 
                     @if(auth()->user()->isAdmin === 1)
-                        <form action="{{route('orders.update.status', ['order'=>$order->id])}}" method="POST">
+                        <form action="{{ route('orders.update.status', ['order' => $order->id]) }}" method="POST">
                             @csrf
                             @method('PUT')
                             <div class="form-group">
@@ -34,6 +34,7 @@
                                 <select name="status" id="status" class="form-control">
                                     <option value="processing" {{ $order->status === 'processing' ? 'selected' : '' }}>Processing</option>
                                     <option value="shipped" {{ $order->status === 'shipped' ? 'selected' : '' }}>Shipped</option>
+                                    <option value="paid" {{ $order->status === 'paid' ? 'selected' : '' }}>Paid</option> <!-- Add this option for 'paid' status -->
                                 </select>
                             </div>
                             <button type="submit" class="btn btn-primary">Update Status</button>

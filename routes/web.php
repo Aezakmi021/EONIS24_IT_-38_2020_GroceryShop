@@ -97,6 +97,7 @@ Route::post('/logout', [UserController::class, 'logout'])->middleware('auth');
 
 Route::get('/notifications/{id}/mark-as-read', [NotificationController::class,'markAsRead'])->name('notifications.markAsRead')->middleware('admin.auth');
 
+Route::post('/stripe/webhook', [StripeController::class, 'handleWebhook']);
 
 
 

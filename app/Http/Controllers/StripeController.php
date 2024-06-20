@@ -8,6 +8,9 @@ use Stripe\Stripe;
 use Stripe\Checkout\Session; // Import the Session class from Stripe
 use App\Models\Cart;
 use App\Models\Order;
+use Stripe\Event;
+use Stripe\Exception\SignatureVerificationException;
+use Stripe\Webhook;
 
 class StripeController extends Controller
 {
@@ -93,6 +96,55 @@ class StripeController extends Controller
 
         // Redirect to success view
         return view('success')->with('success', 'Order placed successfully.');
+    }
+
+    public function handleWebhook(Request $request)
+    {
+        $endpoint_secret = env('STRIPE_WEBHOOK_SECRET');
+        $payload = $request->getContent();
+        $sig_header = $request->header('Stripe-Signature');
+        $event = null;
+
+        // Log payload and signature header for debugging
+        logger()->info('Stripe Webhook Payload:', ['payload' => $payload]);
+        logger()->info('Stripe Signature Header:', ['sig_header' => $sig_header]);
+
+
+        try {
+            // Verify webhook signature
+            $event = Webhook::constructEvent($payload, $sig_header, $endpoint_secret);
+        } catch (SignatureVerificationException $e) {
+            // Log error for debugging
+            logger()->error('Webhook signature verification failed', ['exception' => $e]);
+
+            // Invalid signature
+            return response()->json(['error' => 'Webhook signature verification failed.'], 403);
+        }
+
+        // Handle the event based on type
+        switch ($event->type) {
+            case 'checkout.session.completed':
+                $session = $event->data->object;
+
+                // Retrieve relevant information from the session object
+                $orderId = $order->id; // Assuming you stored order ID as client reference ID
+                $order = Order::findOrFail($orderId);
+
+                // Update order status to 'payment made'
+                $order->status = 'payment made';
+                $order->save();
+
+                // Additional actions if needed
+
+                break;
+            // Handle other event types as needed
+            default:
+                // Unexpected event type
+                return response()->json(['error' => 'Unexpected webhook event received.'], 400);
+        }
+
+        // Return a response to acknowledge receipt of the event
+        return response()->json(['status' => 'success']);
     }
 
 }

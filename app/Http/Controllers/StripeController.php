@@ -26,9 +26,7 @@ class StripeController extends Controller
 
         // Prepare line items array
         $lineItems = [];
-
         foreach ($cartItems as $item) {
-            // Provide a default product name if it's missing
             $productName = isset($item['name']) ? $item['name'] : 'Unnamed Product';
 
             $lineItems[] = [
@@ -50,12 +48,24 @@ class StripeController extends Controller
             'cancel_url' => route('cart'),
         ]);
 
+        // Create a new order
+        $userId = auth()->user()->id;
+        $order = new Order();
+        $order->user_id = $userId;
+        $order->status = 'processing';
+        $order->items = json_encode($cartItems); // Store cart items as JSON
+        $order->shipping_address = ''; // Temporary value
+        $order->city = ''; // Temporary value
+        $order->country = ''; // Temporary value
+        $order->zip_code = ''; // Temporary value
+        // Add other order details as needed
+        $order->save();
+
         return redirect()->away($session->url);
     }
 
     public function success(Request $request)
     {
-        $requestParameters = $request->all();
         // Get the cart items from the session
         $cartItems = $request->session()->get('cart', []);
         $shippingAddress = $request->input('shippingAddress');
@@ -82,17 +92,15 @@ class StripeController extends Controller
             $product->save();
         }
 
-
-        // Create a new order
-        $order = new Order();
-        $order->user_id = $userId;
-        $order->shipping_address = $shippingAddress;
-        $order->city = $city;
-        $order->country = $country;
-        $order->zip_code = $zipCode;
-        $order->items = json_encode($cartItems); // Store cart items as JSON
-        // Add other order details as needed
-        $order->save();
+        // Update the order with shipping details
+        $order = Order::where('user_id', $userId)->where('status', 'processing')->latest()->first();
+        if ($order) {
+            $order->shipping_address = $shippingAddress;
+            $order->city = $city;
+            $order->country = $country;
+            $order->zip_code = $zipCode;
+            $order->save();
+        }
 
         // Redirect to success view
         return view('success')->with('success', 'Order placed successfully.');
@@ -109,7 +117,6 @@ class StripeController extends Controller
         logger()->info('Stripe Webhook Payload:', ['payload' => $payload]);
         logger()->info('Stripe Signature Header:', ['sig_header' => $sig_header]);
 
-
         try {
             // Verify webhook signature
             $event = Webhook::constructEvent($payload, $sig_header, $endpoint_secret);
@@ -124,27 +131,36 @@ class StripeController extends Controller
         // Handle the event based on type
         switch ($event->type) {
             case 'checkout.session.completed':
+                // Log the event for debugging
+                logger()->info('Checkout session completed event received', ['event' => $event]);
+
+                // Retrieve the session object from the event
                 $session = $event->data->object;
 
-                // Retrieve relevant information from the session object
-                $orderId = $order->id; // Assuming you stored order ID as client reference ID
-                $order = Order::findOrFail($orderId);
+                // Find the order using the session ID from Stripe
+                $order = Order::latest()->first();
 
-                // Update order status to 'payment made'
-                $order->status = 'payment made';
+                if (!$order) {
+                    logger()->error('Order not found for session ID:', ['session_id' => $session->id]);
+                    return response()->json(['error' => 'Order not found.'], 404);
+                }
+
+                // Update order status to 'paid'
+                $order->status = 'paid';
                 $order->save();
 
-                // Additional actions if needed
+                // Log the successful update
+                logger()->info('Order status updated to paid', ['order_id' => $order->id]);
 
-                break;
+                return response()->json(['status' => 'success']);
             // Handle other event types as needed
             default:
-                // Unexpected event type
+                // Log unexpected event type
+                logger()->warning('Unexpected event type received', ['event_type' => $event->type]);
                 return response()->json(['error' => 'Unexpected webhook event received.'], 400);
         }
 
         // Return a response to acknowledge receipt of the event
         return response()->json(['status' => 'success']);
     }
-
 }

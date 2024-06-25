@@ -44,7 +44,12 @@ class StripeController extends Controller
         $session = Session::create([
             'line_items' => $lineItems,
             'mode' => 'payment',
-            'success_url' => route('success', $request->all()),
+            'success_url' => route('success', [
+                'shippingAddress' => $request->input('shippingAddress'),
+                'city' => $request->input('city'),
+                'country' => $request->input('country'),
+                'zipCode' => $request->input('zipCode')
+            ]),
             'cancel_url' => route('cart'),
         ]);
 
@@ -54,28 +59,36 @@ class StripeController extends Controller
         $order->user_id = $userId;
         $order->status = 'processing';
         $order->items = json_encode($cartItems); // Store cart items as JSON
-        $order->shipping_address = ''; // Temporary value
-        $order->city = ''; // Temporary value
-        $order->country = ''; // Temporary value
-        $order->zip_code = ''; // Temporary value
+        $order->shipping_address = $request->input('shippingAddress');
+        $order->city = $request->input('city');
+        $order->country = $request->input('country');
+        $order->zip_code = $request->input('zipCode');
         // Add other order details as needed
         $order->save();
 
         return redirect()->away($session->url);
     }
 
+
     public function success(Request $request)
     {
         // Get the cart items from the session
         $cartItems = $request->session()->get('cart', []);
+
+        // If the cart is empty, redirect back with an error message
+        if (empty($cartItems)) {
+            return redirect()->route('cart')->with('error', 'Your cart is empty.');
+        }
+
+        // Retrieve shipping details from the request
         $shippingAddress = $request->input('shippingAddress');
         $city = $request->input('city');
         $country = $request->input('country');
         $zipCode = $request->input('zipCode');
 
-        // If the cart is empty, redirect back with an error message
-        if (empty($cartItems)) {
-            return redirect()->route('cart')->with('error', 'Your cart is empty.');
+        // Check if the shipping details are present
+        if (!$shippingAddress || !$city || !$country || !$zipCode) {
+            return redirect()->route('cart')->with('error', 'Shipping details are missing.');
         }
 
         // Delete the user's cart
@@ -92,7 +105,7 @@ class StripeController extends Controller
             $product->save();
         }
 
-        // Update the order with shipping details
+        // Update the latest order for the user with shipping details
         $order = Order::where('user_id', $userId)->where('status', 'processing')->latest()->first();
         if ($order) {
             $order->shipping_address = $shippingAddress;
@@ -100,6 +113,10 @@ class StripeController extends Controller
             $order->country = $country;
             $order->zip_code = $zipCode;
             $order->save();
+        } else {
+            // Log the error if order is not found
+            logger()->error('Order not found for user', ['user_id' => $userId]);
+            return redirect()->route('cart')->with('error', 'Order not found.');
         }
 
         // Redirect to success view
